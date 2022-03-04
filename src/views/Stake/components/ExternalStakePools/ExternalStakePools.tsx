@@ -139,7 +139,7 @@ const MobileStakePool: React.FC<{ pool: ExternalPool }> = props => {
       <DataRow
         title={`TVL`}
         isLoading={!totalValueLocked}
-        balance={totalValueLocked ? formatCurrency(totalValueLocked) : undefined}
+        balance={totalValueLocked ? formatCurrency(totalValueLocked) : ""}
       />
 
       {connected && (

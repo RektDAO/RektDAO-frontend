@@ -14,7 +14,7 @@ import { AppDispatch } from "src/store";
 import ConnectButton from "../../components/ConnectButton/ConnectButton";
 import { shorten, trim } from "../../helpers";
 import { error } from "../../slices/MessagesSlice";
-import { DisplayBondDiscount } from "./BondV2";
+// import { DisplayBondDiscount } from "./BondV2";
 
 function BondPurchase({
   bond,
@@ -27,7 +27,7 @@ function BondPurchase({
 }) {
   const SECONDS_TO_REFRESH = 60;
   const dispatch = useDispatch<AppDispatch>();
-  const { provider, address, networkId } = useWeb3Context();
+  const { provider, address, networkId, referral } = useWeb3Context();
   const currentIndex = useAppSelector(state => {
     return state.app.currentIndex ?? "1";
   });
@@ -71,6 +71,7 @@ function BondPurchase({
           bond,
           maxPrice: Math.round(Number(bond.priceTokenBigNumber.toString()) * (1 + slippage / 100)),
           address: recipientAddress,
+          referral: String(referral),
         }),
       ).then(() => clearInput());
     }
@@ -198,7 +199,7 @@ function BondPurchase({
               `${trim(Number(quantity) / bond.priceToken, 4) || "0"} ` +
               `sOHM (≈${trim(+quantity / bond.priceToken / +currentIndex, 4) || "0"} gOHM)`
             }
-            tooltip={t`The total amount of payout asset you will recieve from this bond purhcase. (sOHM amount will be higher due to rebasing)`}
+            // tooltip={t`The total amount of payout asset you will recieve from this bond purhcase. (sOHM amount will be higher due to rebasing)`}
             isLoading={isBondLoading}
           />
           <DataRow
@@ -207,12 +208,13 @@ function BondPurchase({
               trim(+bond.maxPayoutOrCapacityInQuote, 4) || "0"
             } ${bond.displayName})`}
             isLoading={isBondLoading}
-            tooltip={t`The maximum quantity of payout token we are able to offer via bonds at this moment in time.`}
+            // tooltip={t`The maximum quantity of payout token we are able to offer via bonds at this moment in time.`}
           />
           <DataRow
             title={t`Discount`}
-            balance={<DisplayBondDiscount key={bond.displayName} bond={bond} />}
-            tooltip={t`Negative discount is bad (you pay more than the market value). The bond discount is the percentage difference between OHM's market value and the bond's price.`}
+            balance={"0"}
+            //{<DisplayBondDiscount key={bond.displayName} bond={bond} />}
+            // tooltip={t`Negative discount is bad (you pay more than the market value). The bond discount is the percentage difference between OHM's market value and the bond's price.`}
             isLoading={isBondLoading}
           />
 
@@ -220,7 +222,7 @@ function BondPurchase({
             title={t`Duration`}
             balance={bond.duration}
             isLoading={isBondLoading}
-            tooltip={t`The duration of the Bond whereby the bond can be claimed in it’s entirety.  Bonds are no longer vested linearly and are locked for entire duration.`}
+            // tooltip={t`The duration of the Bond whereby the bond can be claimed in it’s entirety.  Bonds are no longer vested linearly and are locked for entire duration.`}
           />
           {recipientAddress !== address && (
             <DataRow title={t`Recipient`} balance={shorten(recipientAddress)} isLoading={isBondLoading} />

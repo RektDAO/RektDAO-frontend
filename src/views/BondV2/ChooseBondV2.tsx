@@ -45,7 +45,12 @@ function ChooseBondV2() {
     return state.app.marketPrice;
   });
 
-  const treasuryBalance = useAppSelector(state => state.app.treasuryMarketValue);
+  const treasuryBalance = useAppSelector(state => {
+    return state.app.treasuryMarketValue;
+  });
+  const treasuryBalanceSafe = () => {
+    return treasuryBalance || 0;
+  };
 
   const isBondsLoading = useAppSelector(state => state.bondingV2.loading ?? true);
 
@@ -54,7 +59,7 @@ function ChooseBondV2() {
     currency: "USD",
     maximumFractionDigits: 0,
     minimumFractionDigits: 0,
-  }).format(Number(treasuryBalance));
+  }).format(Number(treasuryBalanceSafe()));
 
   const v1AccountBonds: IUserBondDetails[] = useAppSelector(state => {
     const withInterestDue = [];
@@ -75,8 +80,8 @@ function ChooseBondV2() {
           <MetricCollection>
             <Metric
               label={t`Treasury Balance`}
-              metric={formattedTreasuryBalance}
-              isLoading={!!treasuryBalance ? false : true}
+              metric={!treasuryBalance ? t`Coming Soon` : formattedTreasuryBalance}
+              isLoading={treasuryBalance === undefined}
             />
             <Metric
               label={t`OHM Price`}

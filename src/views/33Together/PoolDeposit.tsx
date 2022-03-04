@@ -150,6 +150,7 @@ export const PoolDeposit = (props: PoolDepositProps) => {
             value={quantity}
             onChange={e => updateDepositQuantity(e)}
             startAdornment="sOHM"
+            label=""
             labelWidth={0}
             endString={t`Max`}
             endStringOnClick={setMax}

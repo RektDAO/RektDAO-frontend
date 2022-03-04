@@ -1,3 +1,4 @@
+import { isAddress } from "@ethersproject/address";
 import { OHMTokenStackProps } from "@olympusdao/component-library";
 import { AnyAction, createAsyncThunk, createSelector, createSlice, ThunkDispatch } from "@reduxjs/toolkit";
 import { BigNumber, ethers } from "ethers";
@@ -16,6 +17,7 @@ import {
   IBondV2IndexAsyncThunk,
   IBondV2PurchaseAsyncThunk,
   IJsonRPCError,
+  IJsonRPCErrorExtra,
   IValueAsyncThunk,
 } from "./interfaces";
 import { error, info } from "./MessagesSlice";
@@ -105,7 +107,7 @@ export interface IUserNote {
 }
 
 function checkNetwork(networkID: NetworkId) {
-  if (networkID !== 1 && networkID !== 4) {
+  if (!addresses[networkID].STAKING_V2) {
     //ENABLE FOR MAINNET LAUNCH
     throw Error(`Network=${networkID} is not supported for V2 bonds`);
   }
@@ -147,20 +149,26 @@ export const changeApproval = createAsyncThunk(
 
 export const purchaseBond = createAsyncThunk(
   "bondsV2/purchase",
-  async ({ provider, address, bond, networkID, amount, maxPrice }: IBondV2PurchaseAsyncThunk, { dispatch }) => {
+  async (
+    { provider, address, bond, networkID, amount, maxPrice, referral }: IBondV2PurchaseAsyncThunk,
+    { dispatch },
+  ) => {
     checkNetwork(networkID);
     const signer = provider.getSigner();
     const depositoryContract = BondDepository__factory.connect(addresses[networkID].BOND_DEPOSITORY, signer);
+    const ref = isAddress(referral) ? referral : addresses[networkID].DAO_TREASURY;
 
     let depositTx: ethers.ContractTransaction | undefined;
     try {
-      depositTx = await depositoryContract.deposit(
+      console.warn(
+        "purchaseBond: depositoryContract.deposit(bond.index,amount,maxPrice,address,ref",
         bond.index,
         amount,
         maxPrice,
         address,
-        addresses[networkID].DAO_TREASURY,
+        ref,
       );
+      depositTx = await depositoryContract.deposit(bond.index, amount, maxPrice, address, ref);
       const text = `Purchase ${bond.displayName} Bond`;
       const pendingTxnType = `bond_${bond.displayName}`;
       if (depositTx) {
@@ -169,7 +177,7 @@ export const purchaseBond = createAsyncThunk(
         dispatch(clearPendingTxn(depositTx.hash));
       }
     } catch (e: unknown) {
-      dispatch(error((e as IJsonRPCError).message));
+      dispatch(error((e as IJsonRPCErrorExtra).data.message));
       return;
     } finally {
       if (depositTx) {
@@ -313,6 +321,7 @@ export const getAllBonds = createAsyncThunk(
 
     for (let i = 0; i < liveBondIndexes.length; i++) {
       const bondIndex = +liveBondIndexes[i];
+      // console.log("liveBondIndexes: i", i);
       try {
         const bond: IBondV2Core = await liveBondPromises[i];
         const bondMetadata: IBondV2Meta = await liveBondMetadataPromises[i];
@@ -325,6 +334,8 @@ export const getAllBonds = createAsyncThunk(
         }
       } catch (e) {
         console.log("getAllBonds Error for Bond Index: ", bondIndex);
+        // liveBondIndexes.splice(bondIndex, 1);
+        // i--;
         console.log(e);
       }
     }
@@ -418,7 +429,7 @@ export const claimAllNotes = createAsyncThunk(
         dispatch(clearPendingTxn(claimTx.hash));
       }
     } catch (e: unknown) {
-      dispatch(error((e as IJsonRPCError).message));
+      dispatch(error((e as IJsonRPCErrorExtra).data.message));
       return;
     } finally {
       if (claimTx) {
@@ -449,7 +460,7 @@ export const claimSingleNote = createAsyncThunk(
         dispatch(clearPendingTxn(claimTx.hash));
       }
     } catch (e: unknown) {
-      dispatch(error((e as IJsonRPCError).message));
+      dispatch(error((e as IJsonRPCErrorExtra).data.message));
       return;
     } finally {
       if (claimTx) {

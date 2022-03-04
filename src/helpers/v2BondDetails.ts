@@ -1,7 +1,7 @@
 import { OHMTokenStackProps } from "@olympusdao/component-library";
 import { ethers } from "ethers";
 
-import { NetworkId } from "../networkDetails";
+import { addresses, NetworkId } from "../networkDetails";
 import { IERC20__factory, UniswapV2Lp__factory } from "../typechain";
 import { getTokenByContract, getTokenPrice } from "./";
 
@@ -141,6 +141,16 @@ export const UnknownDetails: V2BondDetails = {
  * DOWNCASE ALL THE ADDRESSES!!! for comparison purposes
  */
 export const v2BondDetails: { [key: number]: { [key: string]: V2BondDetails } } = {
+  [NetworkId.LOCAL]: {
+    [String(addresses[NetworkId.LOCAL].DAI_ADDRESS).toLowerCase()]: DaiDetails,
+    [String(addresses[NetworkId.LOCAL].FRAX_ADDRESS).toLowerCase()]: FraxDetails,
+    // ["0xa693b19d2931d498c5b318df961919bb4aee87a5"]: UstDetails,
+    // ["0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"]: WbtcDetails,
+    // ["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"]: EthDetails,
+    // ["0x4e3fbd56cd56c3e72c1403e103b45db9da5b9d2b"]: CvxDetails,
+    [String(addresses[NetworkId.LOCAL].OHM_WETH_LP_ADDRESS).toLowerCase()]: OhmEthDetails,
+    [String(addresses[NetworkId.LOCAL].OHM_DAI_LP_ADDRESS).toLowerCase()]: OhmDaiDetails,
+  },
   [NetworkId.TESTNET_RINKEBY]: {
     ["0xb2180448f8945c8cc8ae9809e67d6bd27d8b2f2c"]: DaiDetails,
     ["0x5ed8bd53b0c3fa3deabd345430b1a3a6a4e8bd7c"]: DaiDetails,

@@ -1,9 +1,10 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useQuery } from "react-query";
-import { NetworkId } from "src/constants";
+import { addresses } from "src/constants";
 import { OHM_DAI_RESERVE_CONTRACT_DECIMALS, STAKING_CONTRACT_DECIMALS } from "src/constants/decimals";
-import { assert, nonNullable, parseBigNumber, queryAssertion } from "src/helpers";
+import { assert, getMarketPrice, nonNullable, parseBigNumber, queryAssertion /*, toBN*/ } from "src/helpers";
 import { ohm_dai } from "src/helpers/AllBonds";
+import { useWeb3Context } from "src/hooks";
 
 import { useStaticPairContract } from "./useContract";
 import { useCurrentIndex } from "./useCurrentIndex";
@@ -14,15 +15,23 @@ export const ohmPriceQueryKey = () => ["useOhmPrice"];
  * Returns the market price of OHM.
  */
 export const useOhmPrice = () => {
-  const address = ohm_dai.getAddressForReserve(NetworkId.MAINNET);
-  assert(address, "Contract should exist for NetworkId.MAINNET");
+  const { networkId } = useWeb3Context();
+  const address = ohm_dai.getAddressForReserve(networkId) || addresses[networkId].DAI_ADDRESS;
+  assert(address, "OHM-DAI contract should exist for networkId: " + networkId);
 
-  const reserveContract = useStaticPairContract(address, NetworkId.MAINNET);
+  const reserveContract = useStaticPairContract(address, networkId);
 
   return useQuery<number, Error>(ohmPriceQueryKey(), async () => {
-    const [ohm, dai] = await reserveContract.getReserves();
+    try {
+      const [ohm, dai] = await reserveContract.getReserves();
+      // const [ohm, dai] = reserveContract ? await reserveContract.getReserves() : [toBN(69), toBN(420)];
+      // const [ohm, dai] = [toBN(69), toBN(420 * 10 ** OHM_DAI_RESERVE_CONTRACT_DECIMALS)];
 
-    return parseBigNumber(dai.div(ohm), OHM_DAI_RESERVE_CONTRACT_DECIMALS);
+      return parseBigNumber(dai.div(ohm), OHM_DAI_RESERVE_CONTRACT_DECIMALS);
+    } catch (e) {
+      const marketPrice: number = await getMarketPrice(networkId);
+      return marketPrice;
+    }
   });
 };
 

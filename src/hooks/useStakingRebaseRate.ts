@@ -1,14 +1,16 @@
 import { useQuery } from "react-query";
-import { NetworkId } from "src/constants";
+// import { NetworkId } from "src/constants";
 import { SOHM_ADDRESSES, STAKING_ADDRESSES } from "src/constants/addresses";
 import { createDependentQuery, parseBigNumber, queryAssertion } from "src/helpers";
+import { useWeb3Context } from "src/hooks";
 
 import { useStaticSohmContract, useStaticStakingContract } from "./useContract";
 
 export const stakingRebaseRateQueryKey = () => ["useStakingRebaseRate"];
 export const useStakingRebaseRate = () => {
-  const sohmContract = useStaticSohmContract(SOHM_ADDRESSES[NetworkId.MAINNET], NetworkId.MAINNET);
-  const stakingContract = useStaticStakingContract(STAKING_ADDRESSES[NetworkId.MAINNET], NetworkId.MAINNET);
+  const { networkId } = useWeb3Context();
+  const sohmContract = useStaticSohmContract(SOHM_ADDRESSES[networkId], networkId);
+  const stakingContract = useStaticStakingContract(STAKING_ADDRESSES[networkId], networkId);
 
   // Get dependent data in parallel
   const useDependentQuery = createDependentQuery(stakingRebaseRateQueryKey());

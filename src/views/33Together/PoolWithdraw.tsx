@@ -136,6 +136,7 @@ export const PoolWithdraw = (props: IPoolWithdrawProps) => {
               value={quantity}
               onChange={e => setQuantity(parseFloat(e.target.value))}
               startAdornment="sOHM"
+              label=""
               labelWidth={0}
               endString={t`Max`}
               endStringOnClick={setMax}

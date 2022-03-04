@@ -34,7 +34,7 @@ export function usePathForNetwork({
           break;
         }
       case "bonds":
-        if (VIEWS_FOR_NETWORK[networkID] && VIEWS_FOR_NETWORK[networkID].bonds) {
+        if (VIEWS_FOR_NETWORK[networkID] && VIEWS_FOR_NETWORK[networkID].bondsV2) {
           break;
         } else {
           history.push("/wrap");

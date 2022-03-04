@@ -2,11 +2,13 @@ import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { IFrameEthereumProvider } from "@ledgerhq/iframe-provider";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import React, { ReactElement, useCallback, useContext, useMemo, useState } from "react";
+// import { useLocation } from "react-router-dom";
 import { idFromHexString, initNetworkFunc } from "src/helpers/NetworkHelper";
 import { NodeHelper } from "src/helpers/NodeHelper";
+import { getParameterByName } from "src/helpers/QueryParameterHelper";
 import Web3Modal from "web3modal";
 
-import { NETWORKS } from "../constants";
+import { BLOCK_RATE_MAP, DEFAULT_CHAIN_ID, NETWORKS } from "../constants";
 
 /**
  * determine if in IFrame for Ledger Live
@@ -30,6 +32,7 @@ type onChainProvider = {
   networkName: string;
   providerUri: string;
   providerInitialized: boolean;
+  referral?: string | null;
 };
 
 export type Web3ContextData = {
@@ -63,6 +66,7 @@ const initModal = new Web3Modal({
     walletconnect: {
       package: WalletConnectProvider,
       options: {
+        // rpc: Object.fromEntries(Object.entries(NETWORKS).map(([k, v]) => [k, v.uri])),
         rpc: {
           1: NETWORKS[1].uri(),
           4: NETWORKS[4].uri(),
@@ -79,12 +83,17 @@ const initModal = new Web3Modal({
 export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ children }) => {
   const [connected, setConnected] = useState(false);
   const [address, setAddress] = useState("");
-  // NOTE (appleseed): loading eth mainnet as default rpc provider for a non-connected wallet
-  const [provider, setProvider] = useState<JsonRpcProvider>(NodeHelper.getMainnetStaticProvider());
-  const [networkId, setNetworkId] = useState(1);
+  console.warn("Web3ContextProvider. DEFAULT_CHAIN_ID: ", DEFAULT_CHAIN_ID);
+  const [provider, setProvider] = useState<JsonRpcProvider>(NodeHelper.getAnynetStaticProvider(DEFAULT_CHAIN_ID));
+  const [networkId, setNetworkId] = useState(DEFAULT_CHAIN_ID);
+  const [networkBlockRateSeconds, setNetworkBlockRateSeconds] = useState(BLOCK_RATE_MAP[DEFAULT_CHAIN_ID]);
   const [networkName, setNetworkName] = useState("");
   const [providerUri, setProviderUri] = useState("");
   const [providerInitialized, setProviderInitialized] = useState(false);
+
+  const ref = getParameterByName("ref", window.location.search);
+  const [referral, setReferral] = useState(ref);
+  // console.log("referral", referral);
 
   const [web3Modal, setWeb3Modal] = useState<Web3Modal>(initModal);
 
@@ -114,6 +123,7 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
           setTimeout(() => window.location.reload(), 1);
         } else {
           setNetworkId(networkHash.networkId);
+          setNetworkBlockRateSeconds(BLOCK_RATE_MAP[networkHash.networkId]);
         }
       });
     },
@@ -142,8 +152,10 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
     // Eventually we'll be fine without doing network validations.
     setAddress(connectedAddress);
     const networkHash = await initNetworkFunc({ provider: connectedProvider });
-    console.log("networkHash", networkHash);
+    // console.log("connectedAddress", connectedAddress);
+    // console.log("networkHash", networkHash);
     setNetworkId(networkHash.networkId);
+    setNetworkBlockRateSeconds(BLOCK_RATE_MAP[networkHash.networkId]);
     setNetworkName(networkHash.networkName);
     setProviderUri(networkHash.uri);
     setProviderInitialized(networkHash.initialized);
@@ -175,6 +187,7 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
       networkName,
       providerUri,
       providerInitialized,
+      referral,
     }),
     [
       connect,
@@ -188,6 +201,7 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
       networkName,
       providerUri,
       providerInitialized,
+      referral,
     ],
   );
 

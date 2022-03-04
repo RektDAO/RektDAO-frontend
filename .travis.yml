@@ -1,0 +1,31 @@
+language: node_js
+node_js:
+  - 'lts/*'
+
+install: yarn install --frozen-lockfile
+
+before_install:
+  - source .travis.env-vars-branch-specific.sh
+
+script:
+  - yarn build
+
+env:
+  - REACT_APP_NAME_OVERRIDDEN="RektDAO" REACT_APP_URL_ROOT="https://rektdao.finance" REACT_APP_URL_APP_OVERRIDDEN="https://app.rektdao.finance" REACT_APP_SOCIAL_GITHUB="RektDAO/RektDAO-frontend" REACT_APP_SOCIAL_TWITTER="RektDAO" REACT_APP_SOCIAL_MEDIUM="rektdao" REACT_APP_SOCIAL_DISCORD="XXXXXXX"
+
+deploy:
+  - provider: pages
+    skip_cleanup: true
+    local_dir: build
+    github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+    fqdn: app.rektdao.finance
+    on:
+      branch: RektDAO/main
+  - provider: pages
+    skip_cleanup: true
+    local_dir: build
+    github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+    fqdn: dev.rektdao.finance
+    repo: RektDAO/RektDAO-frontend-DEV
+    on:
+      branch: RektDAO/develop

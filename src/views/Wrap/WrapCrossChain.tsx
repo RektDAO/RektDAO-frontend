@@ -12,7 +12,7 @@ import { useAppSelector } from "src/hooks/index";
 import { useWeb3Context } from "src/hooks/web3Context";
 import { isPendingTxn, txnButtonTextMultiType } from "src/slices/PendingTxnsSlice";
 
-import { NETWORKS } from "../../constants";
+import { NetworkId, NETWORKS } from "../../constants";
 import { formatCurrency, trim } from "../../helpers";
 import { switchNetwork } from "../../helpers/NetworkHelper";
 import { changeMigrationApproval, migrateCrossChainWSOHM } from "../../slices/MigrateThunk";
@@ -50,7 +50,7 @@ function WrapCrossChain() {
     return state.pendingTransactions;
   });
 
-  const ethereum = NETWORKS[1];
+  const ethereum = NETWORKS[NetworkId.MAINNET];
 
   const wrapButtonText = "Migrate";
 
@@ -111,6 +111,7 @@ function WrapCrossChain() {
         placeholder={t`Enter an amount`}
         value={quantity}
         onChange={e => setQuantity(e.target.value)}
+        label=""
         labelWidth={0}
         endString={t`Max`}
         endStringOnClick={setMax}

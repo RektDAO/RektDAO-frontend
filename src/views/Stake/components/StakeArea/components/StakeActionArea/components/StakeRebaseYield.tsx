@@ -8,7 +8,7 @@ export const StakeRebaseYield = () => {
 
   const props: PropsOf<typeof DataRow> = { title: t`Next Reward Yield` };
 
-  if (rebaseRate) props.balance = `${formatNumber(rebaseRate * 100, 4)}%`;
+  if (rebaseRate !== undefined) props.balance = `${formatNumber(rebaseRate * 100, 4)}%`;
   else props.isLoading = true;
 
   return <DataRow {...props} />;
