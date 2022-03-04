@@ -218,6 +218,102 @@ export const frax = new StableBond({
   },
 });
 
+export const wavax = new StableBond({
+  name: "wavax",
+  displayName: "WAVAX",
+  bondToken: "WAVAX",
+  payoutToken: "OHM",
+  v2Bond: true,
+  bondIconSvg: ["AVAX"],
+  bondContractABI: DaiBondContract, // TODO: add updated ABI
+  isBondable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: false,
+    [NetworkId.AVALANCHE_TESTNET]: true,
+  },
+  isLOLable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: false,
+    [NetworkId.AVALANCHE_TESTNET]: false,
+  },
+  LOLmessage: "",
+  isClaimable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: false,
+    [NetworkId.AVALANCHE_TESTNET]: true,
+  },
+  networkAddrs: {
+    [NetworkId.LOCAL]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: BLANK_ADDRESS,
+    },
+    [NetworkId.AVALANCHE_TESTNET]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: "0xd00ae08403B9bbb9124bB305C09058E32C39A48c",
+    },
+  },
+});
+
+export const chainlink = new StableBond({
+  name: "link",
+  displayName: "LINK",
+  bondToken: "LINK",
+  payoutToken: "OHM",
+  v2Bond: true,
+  bondIconSvg: ["placeholder"],
+  bondContractABI: DaiBondContract, // TODO: add updated ABI
+  isBondable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: false,
+    [NetworkId.AVALANCHE_TESTNET]: true,
+  },
+  isLOLable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: false,
+    [NetworkId.AVALANCHE_TESTNET]: false,
+  },
+  LOLmessage: "",
+  isClaimable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: false,
+    [NetworkId.AVALANCHE_TESTNET]: true,
+  },
+  networkAddrs: {
+    [NetworkId.LOCAL]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: BLANK_ADDRESS,
+    },
+    [NetworkId.AVALANCHE_TESTNET]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
+    },
+  },
+});
+
 export const lusd = new StableBond({
   name: "lusd",
   displayName: "LUSD",
@@ -893,6 +989,8 @@ export const ohm_wethOld = new CustomBond({
 export const allBonds = [
   dai,
   frax,
+  wavax,
+  chainlink,
   eth,
   cvx,
   ohm_dai,

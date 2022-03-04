@@ -49,6 +49,8 @@ interface IAddressesVal {
 export const addressesLocal: IAddressesVal = {
   DAI_ADDRESS: EnvHelper.localContract_DAI_ADDRESS,
   FRAX_ADDRESS: EnvHelper.localContract_FRAX_ADDRESS,
+  OHM_DAI_LP_ADDRESS: BLANK_ADDRESS,
+  OHM_WETH_LP_ADDRESS: BLANK_ADDRESS,
   OHM_ADDRESS: BLANK_ADDRESS,
   STAKING_ADDRESS: BLANK_ADDRESS, // Staking (V1)
   STAKING_HELPER_ADDRESS: BLANK_ADDRESS, // Helper contract used for Staking (V1) only

@@ -123,25 +123,18 @@ export const addresses: IAddresses = {
     GOHM_ADDRESS: "0x950c3626B9E9798aA1a4832cEee603ECfb7741a8",
   },
   [NetworkId.AVALANCHE_TESTNET]: {
-    DAI_ADDRESS: "",
-    OHM_ADDRESS: "",
-    STAKING_ADDRESS: "",
-    STAKING_HELPER_ADDRESS: "",
-    OLD_STAKING_ADDRESS: "",
-    SOHM_ADDRESS: "",
-    OLD_SOHM_ADDRESS: "",
-    PRESALE_ADDRESS: "",
-    AOHM_ADDRESS: "",
-    MIGRATE_ADDRESS: "",
+    RESERVETOKEN1_ADDRESS: "0xd00ae08403B9bbb9124bB305C09058E32C39A48c",
+    RESERVETOKEN2_ADDRESS: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
     DISTRIBUTOR_ADDRESS: "",
-    BONDINGCALC_ADDRESS: "",
-    CIRCULATING_SUPPLY_ADDRESS: "",
-    TREASURY_ADDRESS: "",
-    PICKLE_OHM_LUSD_ADDRESS: "",
-    REDEEM_HELPER_ADDRESS: "",
-    WSOHM_ADDRESS: "0x8e8ffc8d41Ee4A915A1FB3940b1beAB0c2Cd5bB0",
-    GOHM_ADDRESS: "0x115E5979435c89eF38fB87C2D7Fc3BCA09053c54",
-    MIGRATOR_ADDRESS: "0x9050D25977F8A19CDD5599A28bC5f55d39fb6105",
+    BONDINGCALC_V2: "",
+    MIGRATOR_ADDRESS: "",
+    GOHM_ADDRESS: "",
+    OHM_V2: "",
+    TREASURY_V2: "",
+    SOHM_V2: "",
+    STAKING_V2: "",
+    BOND_DEPOSITORY: "",
+    DAO_TREASURY: "",
   },
   [NetworkId.AVALANCHE]: {
     DAI_ADDRESS: "",
@@ -195,11 +188,11 @@ interface INetwork {
 
 // These networks will be available for users to select. Other networks may be functional
 // (e.g. testnets, or mainnets being prepared for launch) but need to be selected directly via the wallet.
-export const USER_SELECTABLE_NETWORKS = [NetworkId.LOCAL, NetworkId.MAINNET, NetworkId.ARBITRUM, NetworkId.AVALANCHE];
+export const USER_SELECTABLE_NETWORKS = [NetworkId.LOCAL, NetworkId.AVALANCHE_TESTNET, NetworkId.AVALANCHE];
 
 // Set this to the chain number of the most recently added network in order to enable the 'Now supporting X network'
 // message in the UI. Set to -1 if we don't want to display the message at the current time.
-export const NEWEST_NETWORK_ID = NetworkId.LOCAL;
+export const NEWEST_NETWORK_ID = NetworkId.AVALANCHE_TESTNET;
 
 export const NETWORKS: { [key: number]: INetwork } = {
   [NetworkId.LOCAL]: {
