@@ -567,46 +567,52 @@ export interface IUserBondDetails {
 export const calculateUserBondDetails = createAsyncThunk(
   "account/calculateUserBondDetails",
   async ({ address, bond, networkID, provider }: ICalcUserBondDetailsAsyncThunk) => {
+    const empty = {
+      bond: "",
+      displayName: "",
+      bondIconSvg: [],
+      isLP: false,
+      allowance: 0,
+      balance: "0",
+      interestDue: 0,
+      bondMaturationBlock: 0,
+      pendingPayout: "",
+    };
+
     if (!address) {
-      return {
-        bond: "",
-        displayName: "",
-        bondIconSvg: [],
-        isLP: false,
-        allowance: 0,
-        balance: "0",
-        interestDue: 0,
-        bondMaturationBlock: 0,
-        pendingPayout: "",
-      };
+      return empty;
     }
     // dispatch(fetchBondInProgress());
 
-    // Calculate bond details.
-    const bondContract = bond.getContractForBond(networkID, provider);
-    const reserveContract = bond.getContractForReserve(networkID, provider);
-    const bondDetails = await bondContract.bondInfo(address);
-    const interestDue: BigNumberish = Number(bondDetails.payout.toString()) / Math.pow(10, 9);
-    const bondMaturationBlock = +bondDetails.vesting + +bondDetails.lastBlock;
-    const pendingPayout = await bondContract.pendingPayoutFor(address);
+    try {
+      // Calculate bond details.
+      const bondContract = bond.getContractForBond(networkID, provider);
+      const reserveContract = bond.getContractForReserve(networkID, provider);
+      const bondDetails = await bondContract.bondInfo(address);
+      const interestDue: BigNumberish = Number(bondDetails.payout.toString()) / Math.pow(10, 9);
+      const bondMaturationBlock = +bondDetails.vesting + +bondDetails.lastBlock;
+      const pendingPayout = await bondContract.pendingPayoutFor(address);
 
-    let balance = BigNumber.from(0);
-    const allowance = await reserveContract.allowance(address, bond.getAddressForBond(networkID) || "");
-    balance = await reserveContract.balanceOf(address);
-    // formatEthers takes BigNumber => String
-    const balanceVal = ethers.utils.formatEther(balance);
-    // balanceVal should NOT be converted to a number. it loses decimal precision
-    return {
-      bond: bond.name,
-      displayName: bond.displayName,
-      bondIconSvg: bond.bondIconSvg,
-      isLP: bond.isLP,
-      allowance: Number(allowance.toString()),
-      balance: balanceVal,
-      interestDue,
-      bondMaturationBlock,
-      pendingPayout: ethers.utils.formatUnits(pendingPayout, "gwei"),
-    };
+      let balance = BigNumber.from(0);
+      const allowance = await reserveContract.allowance(address, bond.getAddressForBond(networkID) || "");
+      balance = await reserveContract.balanceOf(address);
+      // formatEthers takes BigNumber => String
+      const balanceVal = ethers.utils.formatEther(balance);
+      // balanceVal should NOT be converted to a number. it loses decimal precision
+      return {
+        bond: bond.name,
+        displayName: bond.displayName,
+        bondIconSvg: bond.bondIconSvg,
+        isLP: bond.isLP,
+        allowance: Number(allowance.toString()),
+        balance: balanceVal,
+        interestDue,
+        bondMaturationBlock,
+        pendingPayout: ethers.utils.formatUnits(pendingPayout, "gwei"),
+      };
+    } catch (e) {
+      return empty;
+    }
   },
 );
 
