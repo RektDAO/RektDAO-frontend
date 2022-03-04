@@ -69,6 +69,26 @@ const EthDetails: V2BondDetails = {
   lpUrl: {},
 };
 
+const AvaxDetails: V2BondDetails = {
+  name: "AVAX",
+  bondIconSvg: ["AVAX"],
+  pricingFunction: async () => {
+    return getTokenPrice("avalanche");
+  },
+  isLP: false,
+  lpUrl: {},
+};
+
+const LinkDetails: V2BondDetails = {
+  name: "LINK",
+  bondIconSvg: ["placeholder"],
+  pricingFunction: async () => {
+    return getTokenPrice("chainlink");
+  },
+  isLP: false,
+  lpUrl: {},
+};
+
 const CvxDetails: V2BondDetails = {
   name: "CVX",
   bondIconSvg: ["CVX"],
@@ -144,10 +164,7 @@ export const v2BondDetails: { [key: number]: { [key: string]: V2BondDetails } } 
   [NetworkId.LOCAL]: {
     [String(addresses[NetworkId.LOCAL].DAI_ADDRESS).toLowerCase()]: DaiDetails,
     [String(addresses[NetworkId.LOCAL].FRAX_ADDRESS).toLowerCase()]: FraxDetails,
-    // ["0xa693b19d2931d498c5b318df961919bb4aee87a5"]: UstDetails,
-    // ["0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"]: WbtcDetails,
     // ["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"]: EthDetails,
-    // ["0x4e3fbd56cd56c3e72c1403e103b45db9da5b9d2b"]: CvxDetails,
     [String(addresses[NetworkId.LOCAL].OHM_WETH_LP_ADDRESS).toLowerCase()]: OhmEthDetails,
     [String(addresses[NetworkId.LOCAL].OHM_DAI_LP_ADDRESS).toLowerCase()]: OhmDaiDetails,
   },
@@ -168,5 +185,9 @@ export const v2BondDetails: { [key: number]: { [key: string]: V2BondDetails } } 
     ["0x4e3fbd56cd56c3e72c1403e103b45db9da5b9d2b"]: CvxDetails,
     ["0x69b81152c5a8d35a67b32a4d3772795d96cae4da"]: OhmEthDetails,
     ["0x055475920a8c93cffb64d039a8205f7acc7722d3"]: OhmDaiDetails,
+  },
+  [NetworkId.AVALANCHE_TESTNET]: {
+    ["0xd00ae08403B9bbb9124bB305C09058E32C39A48c".toLowerCase()]: AvaxDetails,
+    ["0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846".toLowerCase()]: LinkDetails,
   },
 };
