@@ -1,4 +1,3 @@
-export CI=
 export REACT_APP_NAME="RektDAO"
 
 if [[ "$TRAVIS_BRANCH" == "RektDAO/main" ]]; then

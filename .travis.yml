@@ -8,10 +8,14 @@ before_install:
   - source .travis.env-vars-branch-specific.sh
 
 script:
-  - yarn build
+  - if [ "$TRAVIS_BRANCH" = "RektDAO/main" ]; then
+      yarn build;
+    else
+      yarn build:dev;
+    fi
 
 env:
-  - REACT_APP_NAME_OVERRIDDEN="RektDAO" REACT_APP_URL_ROOT="https://rektdao.finance" REACT_APP_URL_APP_OVERRIDDEN="https://app.rektdao.finance" REACT_APP_SOCIAL_GITHUB="RektDAO/RektDAO-frontend" REACT_APP_SOCIAL_TWITTER="RektDAO" REACT_APP_SOCIAL_MEDIUM="rektdao" REACT_APP_SOCIAL_DISCORD="XXXXXXX"
+  - CI=false REACT_APP_NAME_OVERRIDDEN="RektDAO" REACT_APP_URL_ROOT="https://rektdao.finance" REACT_APP_URL_APP_OVERRIDDEN="https://app.rektdao.finance" REACT_APP_SOCIAL_GITHUB="RektDAO/RektDAO-frontend" REACT_APP_SOCIAL_TWITTER="RektDAO" REACT_APP_SOCIAL_MEDIUM="rektdao" REACT_APP_SOCIAL_DISCORD="mW4QqkmMfv"
 
 deploy:
   - provider: pages
