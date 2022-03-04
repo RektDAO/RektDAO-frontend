@@ -1,6 +1,6 @@
 import { JsonRpcProvider, StaticJsonRpcProvider } from "@ethersproject/providers";
 
-import { NETWORKS } from "../constants";
+import { NetworkId, NETWORKS } from "../constants";
 import { EnvHelper } from "../helpers/Environment";
 import { NodeHelper } from "../helpers/NodeHelper";
 
@@ -15,28 +15,32 @@ export const initNetworkFunc = async ({ provider }: IGetCurrentNetwork) => {
     let supported = true;
     const id: number = await provider.getNetwork().then(network => network.chainId);
     switch (id) {
-      case 1:
-        networkName = "Ethereum";
+      case NetworkId.LOCAL:
+        networkName = NETWORKS[id].chainName;
         uri = NodeHelper.getMainnetURI(id);
         break;
-      case 4:
-        networkName = "Rinkeby Testnet";
+      case NetworkId.MAINNET:
+        networkName = NETWORKS[id].chainName;
         uri = NodeHelper.getMainnetURI(id);
         break;
-      case 42161:
-        networkName = "Arbitrum";
+      case NetworkId.TESTNET_RINKEBY:
+        networkName = NETWORKS[id].chainName;
         uri = NodeHelper.getMainnetURI(id);
         break;
-      case 421611:
-        networkName = "Arbitrum Testnet";
+      case NetworkId.ARBITRUM:
+        networkName = NETWORKS[id].chainName;
+        uri = NodeHelper.getMainnetURI(id);
+        break;
+      case NetworkId.ARBITRUM_TESTNET:
+        networkName = NETWORKS[id].chainName;
         uri = EnvHelper.alchemyArbitrumTestnetURI;
         break;
-      case 43113:
-        networkName = "Avalanche Fuji Testnet";
+      case NetworkId.AVALANCHE_TESTNET:
+        networkName = NETWORKS[id].chainName;
         uri = EnvHelper.alchemyAvalancheTestnetURI;
         break;
-      case 43114:
-        networkName = "Avalanche";
+      case NetworkId.AVALANCHE:
+        networkName = NETWORKS[id].chainName;
         uri = NodeHelper.getMainnetURI(id);
         break;
       default:

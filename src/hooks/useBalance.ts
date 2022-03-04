@@ -1,4 +1,4 @@
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumber, ethers } from "ethers";
 import { useQueries, useQuery, UseQueryResult } from "react-query";
 import { abi as IERC20_ABI } from "src/abi/IERC20.json";
 import { NetworkId } from "src/constants";
@@ -21,6 +21,17 @@ import { IERC20 } from "src/typechain";
 import { useWeb3Context } from ".";
 import { useMultipleContracts, useStaticFuseContract } from "./useContract";
 
+export async function balanceQueryFn(address: string, contract: IERC20 | null) {
+  let res = ethers.constants.Zero;
+  if (!contract) return res;
+  try {
+    res = await contract.balanceOf(address);
+  } catch (e) {
+    // console.log("balanceQueryFn:e", e);
+  }
+  return res;
+}
+
 export const balanceQueryKey = (address?: string, tokenAddressMap?: AddressMap, networkId?: NetworkId) =>
   ["useBalance", address, tokenAddressMap, networkId].filter(nonNullable);
 
@@ -37,7 +48,7 @@ export const useBalance = <TAddressMap extends AddressMap = AddressMap>(tokenAdd
   const results = useQueries(
     networkIds.map((networkId, index) => ({
       enabled: !!address,
-      queryFn: () => contracts[index].balanceOf(address),
+      queryFn: () => balanceQueryFn(address, contracts[index]),
       queryKey: balanceQueryKey(address, tokenAddressMap, networkId),
     })),
   );
@@ -64,13 +75,17 @@ export const useFuseBalance = () => {
       async () => {
         queryAssertion(address, fuseBalanceQueryKey(address));
 
-        const promises = [pool6Contract, pool18Contract, pool36Contract].map(async contract => {
-          return contract.callStatic.balanceOfUnderlying(address);
-        });
+        try {
+          const promises = [pool6Contract, pool18Contract, pool36Contract].map(async contract => {
+            return contract.callStatic.balanceOfUnderlying(address);
+          });
 
-        const results = await Promise.all(promises);
+          const results = await Promise.all(promises);
 
-        return results.reduce((prev, bal) => prev.add(bal), BigNumber.from(0));
+          return results.reduce((prev, bal) => prev.add(bal), BigNumber.from(0));
+        } catch (e) {
+          return ethers.constants.Zero;
+        }
       },
       { enabled: !!address },
     ),

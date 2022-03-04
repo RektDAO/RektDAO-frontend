@@ -3,7 +3,7 @@ import { BigNumber, ethers } from "ethers";
 import { addresses, NetworkId } from "src/constants";
 import { setAll } from "src/helpers";
 import { ZapHelper, ZapperToken } from "src/helpers/ZapHelper";
-import { IERC20__factory, Zap__factory } from "src/typechain";
+import { IERC20__factory /*, Zap__factory*/ } from "src/typechain";
 
 import { trackGAEvent, trackSegmentEvent } from "../helpers/analytics";
 import { getBalances } from "./AccountSlice";
@@ -136,31 +136,31 @@ export const executeZap = createAsyncThunk(
         +slippage / 100,
         networkID,
       );
-      const zapContract = Zap__factory.connect(addresses[networkID].ZAP, signer);
-      let tx: ethers.ContractTransaction;
-      if (tokenAddress === ethers.constants.AddressZero) {
-        tx = await zapContract.ZapStake(
-          tokenAddress,
-          sellAmount,
-          gOHM ? addresses[networkID].GOHM_ADDRESS : addresses[networkID].SOHM_V2,
-          ethers.utils.parseUnits(minimumAmount, gOHM ? 18 : 9),
-          rawTransactionData.to,
-          rawTransactionData.data,
-          address,
-          { value: sellAmount },
-        );
-      } else {
-        tx = await zapContract.ZapStake(
-          tokenAddress,
-          sellAmount,
-          gOHM ? addresses[networkID].GOHM_ADDRESS : addresses[networkID].SOHM_V2,
-          ethers.utils.parseUnits(minimumAmount, gOHM ? 18 : 9),
-          rawTransactionData.to,
-          rawTransactionData.data,
-          address,
-        );
-      }
-      await tx.wait();
+      // const zapContract = Zap__factory.connect(addresses[networkID].ZAP, signer);
+      // let tx: ethers.ContractTransaction;
+      // if (tokenAddress === ethers.constants.AddressZero) {
+      //   tx = await zapContract.ZapStake(
+      //     tokenAddress,
+      //     sellAmount,
+      //     gOHM ? addresses[networkID].GOHM_ADDRESS : addresses[networkID].SOHM_V2,
+      //     ethers.utils.parseUnits(minimumAmount, gOHM ? 18 : 9),
+      //     rawTransactionData.to,
+      //     rawTransactionData.data,
+      //     address,
+      //     { value: sellAmount },
+      //   );
+      // } else {
+      //   tx = await zapContract.ZapStake(
+      //     tokenAddress,
+      //     sellAmount,
+      //     gOHM ? addresses[networkID].GOHM_ADDRESS : addresses[networkID].SOHM_V2,
+      //     ethers.utils.parseUnits(minimumAmount, gOHM ? 18 : 9),
+      //     rawTransactionData.to,
+      //     rawTransactionData.data,
+      //     address,
+      //   );
+      // }
+      // await tx.wait();
 
       const uaData: IUADataZap = {
         address: address,

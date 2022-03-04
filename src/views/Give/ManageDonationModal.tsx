@@ -540,6 +540,7 @@ export function ManageDonationModal({
               </div>
               <Input
                 id="amount-input"
+                label=""
                 type="number"
                 placeholder={t`Enter an amount`}
                 value={getDepositAmount().isEqualTo(0) ? null : getDepositAmount()}

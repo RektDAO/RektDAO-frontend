@@ -5,7 +5,7 @@ import { InfoTooltipMulti, Paper } from "@olympusdao/component-library";
 import { Tab, TabPanel, Tabs } from "@olympusdao/component-library";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addresses, POOL_GRAPH_URLS } from "src/constants";
+import { addresses, POOL_GRAPH_URLS, TOKEN_DECIMALS_TENS } from "src/constants";
 import { calculateOdds, trimOdds } from "src/helpers/33Together";
 import { useAppSelector, useWeb3Context } from "src/hooks";
 import { apolloExt } from "src/lib/apolloClient";
@@ -70,7 +70,6 @@ const PoolTogether = () => {
   }, [networkId]);
 
   useEffect(() => {
-    console.log("apollo", networkId);
     let apolloUrl: string;
     if (!providerInitialized) {
       apolloUrl = poolDataQuery(addresses[1].PT_PRIZE_POOL_ADDRESS);
@@ -107,7 +106,7 @@ const PoolTogether = () => {
       )
         .then(poolData => {
           poolData?.data.prizePool?.prizes.map((prize: Prize) => {
-            const awardedAmount = parseFloat(prize.awardedControlledTokens[0]?.amount) / 10 ** 9 || 0;
+            const awardedAmount = parseFloat(prize.awardedControlledTokens[0]?.amount) / TOKEN_DECIMALS_TENS || 0;
             // pushing in an AwardItem {awardedTimestamp, awardedBlock, awardedAmount}
             yourPrizes.push({
               awardedTimestamp: prize.awardedTimestamp,

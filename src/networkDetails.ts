@@ -2,33 +2,18 @@ import arbitrum from "./assets/arbitrum.png";
 import avalanche from "./assets/tokens/AVAX.svg";
 import polygon from "./assets/tokens/matic.svg";
 import ethereum from "./assets/tokens/wETH.svg";
+import { addressesLocal, NetworkId } from "./constantsAddl";
 import { EnvHelper } from "./helpers/Environment";
 import { NodeHelper } from "./helpers/NodeHelper";
 
-export enum NetworkId {
-  MAINNET = 1,
-  TESTNET_RINKEBY = 4,
-
-  ARBITRUM = 42161,
-  ARBITRUM_TESTNET = 421611,
-
-  AVALANCHE = 43114,
-  AVALANCHE_TESTNET = 43113,
-
-  POLYGON = 137,
-  POLYGON_TESTNET = 80001,
-
-  FANTOM = 250,
-  FANTOM_TESTNET = 4002,
-
-  Localhost = 1337,
-}
+export * from "./constantsAddl";
 
 interface IAddresses {
   [key: number]: { [key: string]: string };
 }
 
 export const addresses: IAddresses = {
+  [NetworkId.LOCAL]: addressesLocal,
   [NetworkId.TESTNET_RINKEBY]: {
     DAI_ADDRESS: "0xB2180448f8945C8Cc8AE9809E67D6bd27d8B2f2C", // duplicate
     OHM_ADDRESS: "0xC0b491daBf3709Ee5Eb79E603D73289Ca6060932",
@@ -210,13 +195,27 @@ interface INetwork {
 
 // These networks will be available for users to select. Other networks may be functional
 // (e.g. testnets, or mainnets being prepared for launch) but need to be selected directly via the wallet.
-export const USER_SELECTABLE_NETWORKS = [NetworkId.MAINNET, NetworkId.ARBITRUM, NetworkId.AVALANCHE];
+export const USER_SELECTABLE_NETWORKS = [NetworkId.LOCAL, NetworkId.MAINNET, NetworkId.ARBITRUM, NetworkId.AVALANCHE];
 
 // Set this to the chain number of the most recently added network in order to enable the 'Now supporting X network'
 // message in the UI. Set to -1 if we don't want to display the message at the current time.
-export const NEWEST_NETWORK_ID = NetworkId.AVALANCHE;
+export const NEWEST_NETWORK_ID = NetworkId.LOCAL;
 
 export const NETWORKS: { [key: number]: INetwork } = {
+  [NetworkId.LOCAL]: {
+    chainName: "Local",
+    chainId: NetworkId.LOCAL,
+    nativeCurrency: {
+      name: "Ethereum",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: [""],
+    blockExplorerUrls: ["https://etherscan.io/#/"],
+    image: ethereum,
+    imageAltText: "Ethereum Logo",
+    uri: () => NodeHelper.getMainnetURI(NetworkId.LOCAL),
+  },
   [NetworkId.MAINNET]: {
     chainName: "Ethereum",
     chainId: 1,
@@ -347,6 +346,16 @@ interface IViewsForNetwork {
 }
 
 export const VIEWS_FOR_NETWORK: { [key: number]: IViewsForNetwork } = {
+  [NetworkId.LOCAL]: {
+    dashboard: true,
+    stake: true,
+    wrap: true,
+    zap: false,
+    threeTogether: false,
+    bonds: false,
+    network: true,
+    bondsV2: true,
+  },
   [NetworkId.MAINNET]: {
     dashboard: true,
     stake: true,

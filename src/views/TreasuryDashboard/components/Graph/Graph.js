@@ -149,7 +149,7 @@ export const OHMStakedGraph = () => {
       bulletpointColors={bulletpoints.staked}
       infoTooltipMessage={tooltipInfoMessages().staked}
       expandedGraphStrokeColor={theme.palette.graphStrokeColor}
-      headerSubText={`${staked && trim(staked[0].staked, 2)}% `}
+      headerSubText={`${staked && trim(staked[0]?.staked, 2)}% `}
     />
   );
 };

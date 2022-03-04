@@ -88,7 +88,7 @@ export const useMultipleContracts = <TContract extends Contract = Contract>(
 
   return useMemo(() => {
     return Object.values(addressMap).map((address, index) => {
-      return new Contract(address, ABI, providers[index]) as TContract;
+      return !address ? null : (new Contract(String(address), ABI, providers[index]) as TContract);
     });
   }, [addressMap, ABI, providers]);
 };

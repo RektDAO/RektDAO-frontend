@@ -46,8 +46,8 @@ export const OHMPrice: React.FC<AbstractedMetricProps> = props => {
 };
 
 export const CircSupply: React.FC<AbstractedMetricProps> = props => {
-  const { data: totalSupply } = useTotalSupply();
   const { data: circSupply } = useOhmCirculatingSupply();
+  const { data: totalSupply } = useTotalSupply();
 
   const _props: MetricProps = {
     ...props,
@@ -97,6 +97,10 @@ export const CurrentIndex: React.FC<AbstractedMetricProps> = props => {
   if (currentIndex) _props.metric = `${parseBigNumber(currentIndex, STAKING_CONTRACT_DECIMALS).toFixed(2)} sOHM`;
   else _props.isLoading = true;
 
+  if (currentIndex) {
+    _props.tooltip += ` (${parseBigNumber(currentIndex, STAKING_CONTRACT_DECIMALS).toFixed(9)})`;
+  }
+
   return <Metric {..._props} />;
 };
 
@@ -127,6 +131,7 @@ export const TotalValueDeposited: React.FC<AbstractedMetricProps> = props => {
   };
 
   if (totalValueDeposited) _props.metric = formatCurrency(totalValueDeposited, 0);
+  else if (totalValueDeposited !== undefined) _props.metric = t`Coming Soon`;
   else _props.isLoading = true;
 
   return <Metric {..._props} />;
@@ -145,7 +150,8 @@ export const StakingAPY: React.FC<AbstractedMetricProps> = props => {
     const formatted = formatNumber(apy, 1);
 
     _props.metric = `${formatted}%`;
-  } else _props.isLoading = true;
+  } else if (rebaseRate !== undefined) _props.metric = t`Coming Soon`;
+  else _props.isLoading = true;
 
   return <Metric {..._props} />;
 };

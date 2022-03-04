@@ -7,6 +7,7 @@ import { TokenAllowanceGuard } from "src/components/TokenAllowanceGuard/TokenAll
 import { GOHM_ADDRESSES, OHM_ADDRESSES, SOHM_ADDRESSES } from "src/constants/addresses";
 import { useBalance } from "src/hooks/useBalance";
 import { useTestableNetworks } from "src/hooks/useTestableNetworks";
+import { useWeb3Context } from "src/hooks/web3Context";
 
 import { GOHMConversion } from "./components/GOHMConversion";
 import { useStakeToken } from "./hooks/useStakeToken";
@@ -43,6 +44,7 @@ const useStyles = makeStyles<Theme>(theme => ({
 }));
 
 export const StakeInputArea: React.FC<{ isZoomed: boolean }> = props => {
+  const { networkId } = useWeb3Context();
   const classes = useStyles();
   const networks = useTestableNetworks();
   const [stakedAssetType, setStakedAssetType] = useState<"sOHM" | "gOHM">("sOHM");
@@ -54,7 +56,7 @@ export const StakeInputArea: React.FC<{ isZoomed: boolean }> = props => {
   const [amount, setAmount] = useState("");
   const addresses = fromToken === "OHM" ? OHM_ADDRESSES : fromToken === "sOHM" ? SOHM_ADDRESSES : GOHM_ADDRESSES;
   const balances = useBalance(addresses);
-  const balance = balances[networks.MAINNET].data;
+  const balance = balances[networkId].data;
   const setMax = () => balance && setAmount(formatUnits(balance, fromToken === "gOHM" ? 18 : 9));
 
   // Staking/unstaking mutation stuff

@@ -10,6 +10,10 @@ export interface IJsonRPCError {
   readonly code: number;
 }
 
+export interface IJsonRPCErrorExtra extends IJsonRPCError {
+  readonly data: IJsonRPCError;
+}
+
 export interface IBaseAsyncThunk {
   readonly networkID: NetworkId;
   readonly provider: StaticJsonRpcProvider | JsonRpcProvider;
@@ -129,6 +133,7 @@ export interface IBondV2PurchaseAsyncThunk extends IBaseAddressAsyncThunk {
   readonly bond: IBondV2;
   readonly maxPrice: BigNumberish;
   readonly amount: BigNumberish;
+  readonly referral: string;
 }
 
 export interface IApproveBondAsyncThunk extends IBaseBondAsyncThunk {

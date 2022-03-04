@@ -11,6 +11,21 @@ export class EnvHelper {
    * @returns `process.env`
    */
   static env = process.env;
+  static defaultNetworkId: number = Number(EnvHelper.env.REACT_APP_DEFAULT_CHAIN_ID) || 1;
+  static localNetworkId: number = Number(EnvHelper.env.REACT_APP_LOCAL_CHAIN_ID) || 1337;
+  static localContract_DAI_ADDRESS = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_DAI_ADDRESS);
+  static localContract_FRAX_ADDRESS = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_FRAX_ADDRESS);
+  static localContract_OHM_V2 = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_OHM_V2);
+  static localContract_STAKING_V2 = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_STAKING_V2);
+  static localContract_SOHM_V2 = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_SOHM_V2);
+  static localContract_DISTRIBUTOR_ADDRESS = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_DISTRIBUTOR_ADDRESS);
+  static localContract_BONDINGCALC_V2 = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_BONDINGCALC_V2);
+  static localContract_TREASURY_V2 = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_TREASURY_V2);
+  static localContract_MIGRATOR_ADDRESS = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_MIGRATOR_ADDRESS);
+  static localContract_GOHM_ADDRESS = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_GOHM_ADDRESS);
+  static localContract_BOND_DEPOSITORY = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_BOND_DEPOSITORY);
+  static localContract_DAO_TREASURY = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_DAO_TREASURY);
+
   // static alchemyEthereumTestnetURI = `https://eth-rinkeby.alchemyapi.io/v2/${EnvHelper.env.REACT_APP_ETHEREUM_TESTNET_ALCHEMY}`;
   static alchemyArbitrumTestnetURI = `https://arb-rinkeby.g.alchemy.com/v2/${EnvHelper.env.REACT_APP_ARBITRUM_TESTNET_ALCHEMY}`;
   static alchemyAvalancheTestnetURI = ``;
@@ -41,11 +56,7 @@ export class EnvHelper {
   }
 
   static isNotEmpty(envVariable: string) {
-    if (envVariable.length > 10) {
-      return true;
-    } else {
-      return false;
-    }
+    return envVariable.length > 10;
   }
 
   /**
@@ -58,6 +69,17 @@ export class EnvHelper {
 
     // If in production, split the provided API keys on whitespace. Otherwise use default.
     switch (networkId) {
+      case NetworkId.LOCAL:
+        if (
+          EnvHelper.env.REACT_APP_ETHEREUM_ALCHEMY_IDS &&
+          EnvHelper.isNotEmpty(EnvHelper.env.REACT_APP_ETHEREUM_ALCHEMY_IDS)
+        ) {
+          ALCHEMY_ID_LIST = EnvHelper.env.REACT_APP_ETHEREUM_ALCHEMY_IDS.split(EnvHelper.whitespaceRegex);
+        } else {
+          ALCHEMY_ID_LIST = ["_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC"];
+        }
+        uriPath = "https://eth-mainnet.alchemyapi.io/v2/";
+        break;
       case NetworkId.MAINNET:
         if (
           EnvHelper.env.NODE_ENV !== "development" &&
@@ -102,7 +124,7 @@ export class EnvHelper {
         } else {
           ALCHEMY_ID_LIST = [];
         }
-        uriPath = "https://polygon-mainnet.g.alchemy.com/v2";
+        uriPath = "https://polygon-mainnet.g.alchemy.com/v2/";
         break;
       case NetworkId.AVALANCHE:
         if (
@@ -114,7 +136,7 @@ export class EnvHelper {
         } else {
           ALCHEMY_ID_LIST = [];
         }
-        uriPath = "https://api.avax.network/ext/bc/C/rpc";
+        uriPath = "https://api.avax.network/ext/bc/C/rpc/";
         break;
     }
 
@@ -125,8 +147,25 @@ export class EnvHelper {
    * NOTE(appleseed): Infura IDs are only used as Fallbacks & are not Mandatory
    * @returns {Array} Array of Infura API Ids
    */
-  static getInfuraIdList() {
+  static getInfuraIdList(networkId: NetworkId): string[] {
     let INFURA_ID_LIST: string[];
+    let networkFragment: string;
+
+    // If in production, split the provided API keys on whitespace. Otherwise use default.
+    switch (networkId) {
+      case NetworkId.LOCAL:
+        networkFragment = "mainnet";
+        break;
+      case NetworkId.MAINNET:
+        networkFragment = "mainnet";
+        break;
+      case NetworkId.TESTNET_RINKEBY:
+        networkFragment = "rinkeby";
+        break;
+      default:
+        networkFragment = "mainnet";
+        break;
+    }
 
     // split the provided API keys on whitespace
     if (EnvHelper.env.REACT_APP_INFURA_IDS && EnvHelper.isNotEmpty(EnvHelper.env.REACT_APP_INFURA_IDS)) {
@@ -137,7 +176,7 @@ export class EnvHelper {
 
     // now add the uri path
     if (INFURA_ID_LIST.length > 0) {
-      INFURA_ID_LIST = INFURA_ID_LIST.map(infuraID => `https://mainnet.infura.io/v3/${infuraID}`);
+      INFURA_ID_LIST = INFURA_ID_LIST.map(infuraID => `https://${networkFragment}.infura.io/v3/${infuraID}`);
     } else {
       INFURA_ID_LIST = [];
     }
@@ -153,6 +192,14 @@ export class EnvHelper {
   static getSelfHostedNode(networkId: NetworkId) {
     let URI_LIST: string[] = [];
     switch (networkId) {
+      case NetworkId.LOCAL:
+        if (
+          EnvHelper.env.REACT_APP_LOCAL_SELF_HOSTED_NODE &&
+          EnvHelper.isNotEmpty(EnvHelper.env.REACT_APP_LOCAL_SELF_HOSTED_NODE)
+        ) {
+          URI_LIST = EnvHelper.env.REACT_APP_LOCAL_SELF_HOSTED_NODE.split(new RegExp(EnvHelper.whitespaceRegex));
+        }
+        break;
       case NetworkId.MAINNET:
         if (
           EnvHelper.env.REACT_APP_ETHEREUM_SELF_HOSTED_NODE &&
@@ -205,14 +252,14 @@ export class EnvHelper {
   static getAPIUris(networkId: NetworkId) {
     let ALL_URIs = EnvHelper.getSelfHostedNode(networkId);
     if (ALL_URIs.length === 0) {
-      console.warn("API keys must be set in the .env, reverting to fallbacks");
+      console.warn("API keys must be set in the .env, reverting to fallbacks. networkId: ", networkId);
       ALL_URIs = EnvHelper.getFallbackURIs(networkId);
     }
     return ALL_URIs;
   }
 
   static getFallbackURIs(networkId: NetworkId) {
-    const ALL_URIs = [...EnvHelper.getAlchemyAPIKeyList(networkId), ...EnvHelper.getInfuraIdList()];
+    const ALL_URIs = [...EnvHelper.getAlchemyAPIKeyList(networkId), ...EnvHelper.getInfuraIdList(networkId)];
     return ALL_URIs;
   }
 
@@ -231,6 +278,25 @@ export class EnvHelper {
     // If the variable isn't set, we default to true.
     // We also want to be case-insensitive.
     if (giveEnabled !== undefined && giveEnabled.toLowerCase() === "false") return false;
+
+    return true;
+  }
+
+  /**
+   * Indicates whether the Pro feature is enabled (default: true).
+   *
+   * The feature is disabled when:
+   * - REACT_APP_PRO_ENABLED is false
+   *
+   * @param url
+   * @returns
+   */
+  static isProEnabled(url: string): boolean {
+    const proEnabled = EnvHelper.env.REACT_APP_PRO_ENABLED;
+
+    // If the variable isn't set, we default to true.
+    // We also want to be case-insensitive.
+    if (proEnabled !== undefined && proEnabled.toLowerCase() === "false") return false;
 
     return true;
   }

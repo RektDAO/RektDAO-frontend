@@ -7,7 +7,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { InfoTooltip, Modal, Tab, Tabs } from "@olympusdao/component-library";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { NetworkId } from "src/constants";
+import { addresses } from "src/constants";
 import { trim } from "src/helpers";
 import { useMigrationData } from "src/helpers/Migration";
 import { useWeb3Context } from "src/hooks";
@@ -77,7 +77,7 @@ function MigrationModal({ open, handleClose }: { open: boolean; handleClose: any
   useEffect(() => {
     if (
       networkId &&
-      (networkId === NetworkId.MAINNET || networkId === NetworkId.TESTNET_RINKEBY) &&
+      addresses[networkId].MIGRATE_ADDRESS &&
       isAllApproved &&
       (currentOhmBalance || currentSOhmBalance || currentWSOhmBalance)
     ) {

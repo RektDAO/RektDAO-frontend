@@ -34,7 +34,7 @@ import { girth as gTheme } from "./themes/girth.js";
 import { useGoogleAnalytics } from "./hooks/useGoogleAnalytics";
 import projectData from "src/views/Give/projects.json";
 import { getAllBonds, getUserNotes } from "./slices/BondSliceV2";
-import { NetworkId } from "./constants";
+import { addresses } from "./constants";
 import MigrationModalSingle from "./components/Migration/MigrationModalSingle";
 import ProjectInfo from "./views/Give/ProjectInfo";
 import { trackGAEvent, trackSegmentEvent } from "./helpers/analytics";
@@ -136,7 +136,7 @@ function App() {
   const loadApp = useCallback(
     loadProvider => {
       dispatch(loadAppDetails({ networkID: networkId, provider: loadProvider }));
-      if (networkId === NetworkId.MAINNET || networkId === NetworkId.TESTNET_RINKEBY) {
+      if (addresses[networkId].STAKING_V2) {
         bonds.map(bond => {
           // NOTE (appleseed): getBondability & getLOLability control which bonds are active in the view for Bonds V1
           // ... getClaimability is the analogue for claiming bonds
@@ -147,7 +147,7 @@ function App() {
         dispatch(getAllBonds({ provider: loadProvider, networkID: networkId, address }));
       }
     },
-    [networkId, address],
+    [networkId, address, bonds, dispatch],
   );
 
   const loadAccount = useCallback(
@@ -171,11 +171,11 @@ function App() {
         }
       });
     },
-    [networkId, address, providerInitialized],
+    [networkId, address, providerInitialized, bonds, expiredBonds, dispatch],
   );
 
   const oldAssetsDetected = useAppSelector(state => {
-    if (networkId && (networkId === NetworkId.MAINNET || networkId === NetworkId.TESTNET_RINKEBY)) {
+    if (networkId && addresses[networkId].PT_TOKEN_ADDRESS) {
       return (
         state.account.balances &&
         (Number(state.account.balances.sohmV1) ||

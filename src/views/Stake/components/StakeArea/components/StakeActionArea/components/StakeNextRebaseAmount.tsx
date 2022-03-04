@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 import { DataRow } from "@olympusdao/component-library";
 import { BigNumber } from "ethers";
 import { convertGohmToOhm, formatNumber, nonNullable, parseBigNumber } from "src/helpers";
+import { useWeb3Context } from "src/hooks";
 import {
   useFuseBalance,
   useGohmBalance,
@@ -16,6 +17,7 @@ import { useTestableNetworks } from "src/hooks/useTestableNetworks";
 import { NetworkId } from "src/networkDetails";
 
 export const StakeNextRebaseAmount = () => {
+  const { networkId } = useWeb3Context();
   const { data: rebaseRate } = useStakingRebaseRate();
 
   const sohmBalances = useSohmBalance();
@@ -28,26 +30,34 @@ export const StakeNextRebaseAmount = () => {
   const networks = useTestableNetworks();
   const { data: currentIndex } = useCurrentIndex();
 
-  const sohmTokens = [sohmBalances[networks.MAINNET].data, v1sohmBalances[networks.MAINNET].data];
+  const sohmTokens = [
+    sohmBalances[networks.LOCAL]?.data,
+    sohmBalances[networks.MAINNET]?.data,
+    sohmBalances[networks.AVALANCHE]?.data,
+    sohmBalances[networks.FANTOM]?.data,
+    sohmBalances[networks.POLYGON]?.data,
+    v1sohmBalances[networks.MAINNET]?.data,
+  ];
   const totalSohmBalance = sohmTokens.filter(nonNullable).reduce((res, bal) => res.add(bal), BigNumber.from(0));
 
   const gohmTokens = [
-    gohmBalances[networks.MAINNET].data,
-    gohmBalances[NetworkId.ARBITRUM].data,
-    gohmBalances[NetworkId.AVALANCHE].data,
-    gohmBalances[NetworkId.POLYGON].data,
-    gohmBalances[NetworkId.FANTOM].data,
-    wsohmBalances[NetworkId.MAINNET].data,
-    wsohmBalances[NetworkId.ARBITRUM].data,
-    wsohmBalances[NetworkId.AVALANCHE].data,
-    gohmFuseBalances[NetworkId.MAINNET].data,
-    gohmTokemakBalances[NetworkId.MAINNET].data,
+    gohmBalances[networks.LOCAL]?.data,
+    gohmBalances[networks.MAINNET]?.data,
+    gohmBalances[NetworkId.ARBITRUM]?.data,
+    gohmBalances[networks.AVALANCHE]?.data,
+    gohmBalances[networks.POLYGON]?.data,
+    gohmBalances[networks.FANTOM]?.data,
+    wsohmBalances[NetworkId.MAINNET]?.data,
+    wsohmBalances[NetworkId.ARBITRUM]?.data,
+    wsohmBalances[NetworkId.AVALANCHE]?.data,
+    gohmFuseBalances[NetworkId.MAINNET]?.data,
+    gohmTokemakBalances[NetworkId.MAINNET]?.data,
   ];
   const totalGohmBalance = gohmTokens.filter(nonNullable).reduce((res, bal) => res.add(bal), BigNumber.from(0));
 
   const props: PropsOf<typeof DataRow> = { title: t`Next Reward Amount` };
 
-  if (rebaseRate && sohmBalances && totalGohmBalance && currentIndex) {
+  if (rebaseRate !== undefined && sohmBalances && totalGohmBalance && currentIndex) {
     const gohmBalanceAsSohm = convertGohmToOhm(totalGohmBalance, currentIndex);
 
     const totalCombinedBalance = parseBigNumber(gohmBalanceAsSohm, 18) + parseBigNumber(totalSohmBalance);

@@ -333,6 +333,7 @@ export function RecipientModal({ isModalOpen, eventSource, callbackFunc, cancelF
         </div>
         <Input
           id="wallet-input"
+          label=""
           placeholder={t`Enter a wallet address in the form of 0x ...`}
           value={walletAddress}
           error={!isWalletAddressValid}
@@ -435,6 +436,7 @@ export function RecipientModal({ isModalOpen, eventSource, callbackFunc, cancelF
         </div>
         <Input
           id="amount-input"
+          label=""
           placeholder={t`Enter an amount`}
           type="number"
           value={getDepositAmount().isEqualTo(0) ? null : getDepositAmount()}

@@ -7,13 +7,21 @@ import { ethers } from "ethers";
 import { QueryKey, useQuery } from "react-query";
 import { IBondV2 } from "src/slices/BondSliceV2";
 import { IBaseAsyncThunk } from "src/slices/interfaces";
+import { BondDepository__factory } from "src/typechain";
 import { GOHM__factory } from "src/typechain/factories/GOHM__factory";
 
 import { abi as PairContractABI } from "../abi/PairContract.json";
 import { abi as RedeemHelperABI } from "../abi/RedeemHelper.json";
 import { ReactComponent as OhmImg } from "../assets/tokens/token_OHM.svg";
 import { ReactComponent as SOhmImg } from "../assets/tokens/token_sOHM.svg";
-import { addresses, BLOCK_RATE_SECONDS, EPOCH_INTERVAL, NetworkId } from "../constants";
+import {
+  addresses,
+  BLOCK_RATE_MAP,
+  BLOCKS_PER_EPOCH_MAP,
+  NetworkId,
+  NetworkIdVal,
+  TOKEN_DECIMALS_TENS,
+} from "../constants";
 import { PairContract, RedeemHelper } from "../typechain";
 import { ohm_dai, ohm_daiOld, ohm_weth } from "./AllBonds";
 import { EnvHelper } from "./Environment";
@@ -23,37 +31,60 @@ import { NodeHelper } from "./NodeHelper";
  * gets marketPrice from Ohm-DAI v2
  * @returns Number like 333.33
  */
-export async function getMarketPrice() {
-  const mainnetProvider = NodeHelper.getMainnetStaticProvider();
+export async function getMarketPrice(networkId: NetworkIdVal = NetworkId.MAINNET) {
   // v2 price
-  const ohm_dai_address = ohm_dai.getAddressForReserve(NetworkId.MAINNET);
-  const pairContract = new ethers.Contract(ohm_dai_address || "", PairContractABI, mainnetProvider) as PairContract;
+  if (ohm_dai.getIsV2()) {
+    return getMarketPriceOf(networkId, String(addresses[networkId].DAI_ADDRESS));
+  }
+
+  const provider = NodeHelper.getAnynetStaticProvider(networkId);
+  const ohm_dai_address = ohm_dai.getAddressForReserve(networkId);
+  const pairContract = new ethers.Contract(ohm_dai_address || "", PairContractABI, provider) as PairContract;
   const reserves = await pairContract.getReserves();
 
-  return Number(reserves[1].toString()) / Number(reserves[0].toString()) / 10 ** 9;
+  const marketPrice = Number(reserves[1].toString()) / Number(reserves[0].toString()) / TOKEN_DECIMALS_TENS;
+
+  return marketPrice;
 }
 
-export async function getMarketPriceFromWeth() {
-  const mainnetProvider = NodeHelper.getMainnetStaticProvider();
+/**
+ * gets marketPrice from Ohm-DAI v2
+ * @returns Number like 333.33
+ */
+export async function getMarketPriceOf(networkId: NetworkIdVal, contractAddress: string) {
+  const provider = NodeHelper.getAnynetStaticProvider(networkId);
+  const depositoryContract = BondDepository__factory.connect(addresses[networkId].BOND_DEPOSITORY, provider);
+  const markets = await depositoryContract.liveMarketsFor(contractAddress);
+  const marketPriceWei = await depositoryContract.marketPrice(markets[0]);
+  const marketPrice = Number(marketPriceWei.toString()) / TOKEN_DECIMALS_TENS;
+
+  return marketPrice;
+}
+
+export async function getMarketPriceFromWeth(networkId: NetworkIdVal = NetworkId.MAINNET) {
+  const provider = NodeHelper.getAnynetStaticProvider(networkId);
   // v2 price
-  const ohm_weth_address = ohm_weth.getAddressForReserve(NetworkId.MAINNET);
-  const wethBondContract = ohm_weth.getContractForBond(NetworkId.MAINNET, mainnetProvider);
-  const pairContract = new ethers.Contract(ohm_weth_address || "", PairContractABI, mainnetProvider) as PairContract;
+  const ohm_weth_address = ohm_weth.getAddressForReserve(networkId);
+  const wethBondContract = ohm_weth.getContractForBond(networkId, provider);
+  const pairContract = new ethers.Contract(ohm_weth_address || "", PairContractABI, provider) as PairContract;
   const reserves = await pairContract.getReserves();
 
   // since we're using OHM/WETH... also need to multiply by weth price;
   const wethPriceBN: BigNumber = await wethBondContract.assetPrice();
   const wethPrice = Number(wethPriceBN.toString()) / Math.pow(10, 8);
-  return (Number(reserves[1].toString()) / Number(reserves[0].toString()) / 10 ** 9) * wethPrice;
+  const marketPrice =
+    (Number(reserves[1].toString()) / Number(reserves[0].toString()) / TOKEN_DECIMALS_TENS) * wethPrice;
+  return marketPrice;
 }
 
-export async function getV1MarketPrice() {
-  const mainnetProvider = NodeHelper.getMainnetStaticProvider();
+export async function getV1MarketPrice(networkId: NetworkIdVal = NetworkId.MAINNET) {
+  const provider = NodeHelper.getAnynetStaticProvider(networkId);
   // v1 price
-  const ohm_dai_address = ohm_daiOld.getAddressForReserve(NetworkId.MAINNET);
-  const pairContract = new ethers.Contract(ohm_dai_address || "", PairContractABI, mainnetProvider) as PairContract;
+  const ohm_dai_address = ohm_daiOld.getAddressForReserve(networkId);
+  const pairContract = new ethers.Contract(ohm_dai_address || "", PairContractABI, provider) as PairContract;
   const reserves = await pairContract.getReserves();
-  return Number(reserves[1].toString()) / Number(reserves[0].toString()) / 10 ** 9;
+  const marketPrice = Number(reserves[1].toString()) / Number(reserves[0].toString()) / TOKEN_DECIMALS_TENS;
+  return marketPrice;
 }
 
 /**
@@ -156,13 +187,17 @@ export function trim(number = 0, precision = 0) {
   return trimmedNumber;
 }
 
-export function getRebaseBlock(currentBlock: number) {
-  return currentBlock + EPOCH_INTERVAL - (currentBlock % EPOCH_INTERVAL);
+export function getRebaseBlock(currentBlock: number, networkId: NetworkIdVal = NetworkId.MAINNET) {
+  return currentBlock + BLOCKS_PER_EPOCH_MAP[networkId] - (currentBlock % BLOCKS_PER_EPOCH_MAP[networkId]);
 }
 
-export function secondsUntilBlock(startBlock: number, endBlock: number): number {
+export function secondsUntilBlock(
+  startBlock: number,
+  endBlock: number,
+  networkId: NetworkIdVal = NetworkId.MAINNET,
+): number {
   const blocksAway = endBlock - startBlock;
-  const secondsAway = blocksAway * BLOCK_RATE_SECONDS;
+  const secondsAway = blocksAway * BLOCK_RATE_MAP[networkId];
 
   return secondsAway;
 }
@@ -267,8 +302,11 @@ export const bnToNum = (bigNum: BigNumber) => {
   return Number(bigNum.toString());
 };
 
-export const handleContractError = (e: any) => {
-  if (EnvHelper.env.NODE_ENV !== "production") console.warn("caught error in slices; usually network related", e);
+export const handleContractError = (e: any, extra = "?") => {
+  if (Error(e).message?.includes("Error: network does not support ENS")) return;
+  if (EnvHelper.env.NODE_ENV !== "production") {
+    console.warn("caught error in slices; usually network related. extra: ", extra, e);
+  }
 };
 
 /**

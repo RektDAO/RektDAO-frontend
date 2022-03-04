@@ -18,7 +18,7 @@ import { NavItem } from "@olympusdao/component-library";
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
-import { NetworkId } from "src/constants";
+import { addresses, NetworkId } from "src/constants";
 import { EnvHelper } from "src/helpers/Environment";
 import { useAppSelector } from "src/hooks";
 import { useWeb3Context } from "src/hooks/web3Context";
@@ -27,7 +27,7 @@ import { IBondDetails } from "src/slices/BondSlice";
 import { getAllBonds, getUserNotes } from "src/slices/BondSliceV2";
 import { DisplayBondDiscount } from "src/views/BondV2/BondV2";
 
-import { ReactComponent as OlympusIcon } from "../../assets/icons/olympus-nav-header.svg";
+import { ReactComponent as OlympusIcon } from "../../assets/icons/REKT-dice.svg";
 import useBonds from "../../hooks/useBonds";
 import WalletAddressEns from "../TopBar/Wallet/WalletAddressEns";
 import externalUrls from "./externalUrls";
@@ -64,7 +64,7 @@ const NavContent: React.FC<NavContentProps> = ({ handleDrawerToggle }) => {
               <SvgIcon
                 color="primary"
                 component={OlympusIcon}
-                viewBox="0 0 151 100"
+                viewBox="0 0 1500 500"
                 style={{ minWidth: "151px", minHeight: "98px", width: "151px" }}
               />
             </Link>
@@ -73,7 +73,7 @@ const NavContent: React.FC<NavContentProps> = ({ handleDrawerToggle }) => {
 
           <div className="dapp-menu-links">
             <div className="dapp-nav" id="navbarNav">
-              {networkId === NetworkId.MAINNET || networkId === NetworkId.TESTNET_RINKEBY ? (
+              {addresses[networkId].STAKING_V2 ? (
                 <>
                   <NavItem to="/dashboard" icon={"dashboard"} label={t`Dashboard`} />
                   <NavItem to="/bonds" icon="bond" label={t`Bond`} />
@@ -129,11 +129,17 @@ const NavContent: React.FC<NavContentProps> = ({ handleDrawerToggle }) => {
                   <Box className="menu-divider">
                     <Divider />
                   </Box>
-                  <NavItem href="https://pro.olympusdao.finance/" icon="olympus" label={t`Olympus Pro`} />
-                  {/* <NavItem to="/33-together" icon="33-together" label={t`3,3 Together`} /> */}
-                  <Box className="menu-divider">
-                    <Divider />
-                  </Box>
+                  {EnvHelper.isProEnabled(location.search) ? (
+                    <>
+                      <NavItem href="https://pro.olympusdao.finance/" icon="olympus" label={t`Olympus Pro`} />
+                      {/* <NavItem to="/33-together" icon="33-together" label={t`3,3 Together`} /> */}
+                      <Box className="menu-divider">
+                        <Divider />
+                      </Box>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </>
               ) : (
                 <>

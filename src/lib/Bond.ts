@@ -2,7 +2,7 @@ import { JsonRpcSigner, StaticJsonRpcProvider } from "@ethersproject/providers";
 import { OHMTokenStackProps } from "@olympusdao/component-library";
 import { BigNumber, ethers } from "ethers";
 import { abi as ierc20Abi } from "src/abi/IERC20.json";
-import { addresses, NetworkId } from "src/constants";
+import { addresses, NetworkId, TOKEN_DECIMALS_TENS } from "src/constants";
 import { getTokenPrice } from "src/helpers";
 import { getBondCalculator } from "src/helpers/BondCalculator";
 import { EthContract, PairContract } from "src/typechain";
@@ -79,6 +79,10 @@ export abstract class Bond {
     this.v2Bond = bondOpts.v2Bond;
   }
 
+  getIsV2() {
+    return this.v2Bond;
+  }
+
   /**
    * makes isBondable accessible within Bonds.ts
    * @param NetworkId
@@ -118,7 +122,7 @@ export abstract class Bond {
     if (this.isLP) {
       const pairContract = this.getContractForReserve(NetworkId, provider);
       const reserves = await pairContract.getReserves();
-      marketPrice = Number(reserves[1].toString()) / Number(reserves[0].toString()) / 10 ** 9;
+      marketPrice = Number(reserves[1].toString()) / Number(reserves[0].toString()) / TOKEN_DECIMALS_TENS;
     } else {
       marketPrice = await getTokenPrice("convex-finance");
     }
@@ -149,8 +153,20 @@ export class LPBond extends Bond {
     const token = this.getContractForReserve(NetworkId, provider);
     const tokenAddress = this.getAddressForReserve(NetworkId);
     const bondCalculator = getBondCalculator(NetworkId, provider, this.v2Bond);
-    const tokenAmountV1 = await token.balanceOf(addresses[NetworkId].TREASURY_ADDRESS);
-    const tokenAmountV2 = await token.balanceOf(addresses[NetworkId].TREASURY_V2);
+    let tokenAmountV1 = BigNumber.from("0");
+    try {
+      tokenAmountV1 = await token.balanceOf(addresses[NetworkId].TREASURY_ADDRESS);
+    } catch (e) {
+      console.log("balance e", e);
+      tokenAmountV1 = BigNumber.from("0");
+    }
+    let tokenAmountV2 = BigNumber.from("0");
+    try {
+      tokenAmountV2 = await token.balanceOf(addresses[NetworkId].TREASURY_V2);
+    } catch (e) {
+      console.log("balance e", e);
+      tokenAmountV2 = BigNumber.from("0");
+    }
     const tokenAmount = tokenAmountV1.add(tokenAmountV2);
     const valuation = await bondCalculator.valuation(tokenAddress || "", tokenAmount);
     const markdown = await bondCalculator.markdown(tokenAddress || "");
@@ -177,7 +193,13 @@ export class StableBond extends Bond {
 
   async getTreasuryBalance(NetworkId: NetworkId, provider: StaticJsonRpcProvider) {
     const token = this.getContractForReserve(NetworkId, provider);
-    const tokenAmountV1 = await token.balanceOf(addresses[NetworkId].TREASURY_ADDRESS);
+    let tokenAmountV1 = BigNumber.from("0");
+    try {
+      tokenAmountV1 = await token.balanceOf(addresses[NetworkId].TREASURY_ADDRESS);
+    } catch (e) {
+      console.log("balance e", e);
+      tokenAmountV1 = BigNumber.from("0");
+    }
     let tokenAmountV2 = BigNumber.from("0");
     try {
       tokenAmountV2 = await token.balanceOf(addresses[NetworkId].TREASURY_V2);

@@ -11,7 +11,7 @@ import { useAppSelector } from "src/hooks";
 import { useWeb3Context } from "src/hooks/web3Context";
 import { isPendingTxn, txnButtonTextMultiType } from "src/slices/PendingTxnsSlice";
 
-import { NETWORKS } from "../../constants";
+import { NetworkId, NETWORKS } from "../../constants";
 import { formatCurrency, trim } from "../../helpers";
 import { switchNetwork } from "../../helpers/NetworkHelper";
 import { changeApproval, changeWrapV2 } from "../../slices/WrapThunk";
@@ -44,10 +44,12 @@ const Wrap: FC = () => {
   const wrapSohmAllowance = useAppSelector(state => state.account.wrapping && state.account.wrapping.sohmWrap);
   const pendingTransactions = useAppSelector(state => state.pendingTransactions);
 
-  const avax = NETWORKS[43114];
-  const arbitrum = NETWORKS[42161];
+  const avax = NETWORKS[NetworkId.AVALANCHE];
+  const arbitrum = NETWORKS[NetworkId.ARBITRUM];
 
-  const isAvax = useMemo(() => networkId != 1 && networkId != 4 && networkId != -1, [networkId]);
+  const isAvax = useMemo(() => {
+    return networkId != NetworkId.MAINNET && networkId != NetworkId.TESTNET_RINKEBY && networkId != -1;
+  }, [networkId]);
 
   const wrapButtonText =
     assetTo === "gOHM" ? (assetFrom === "wsOHM" ? "Migrate" : "Wrap") + " to gOHM" : `${currentAction} ${assetFrom}`;
@@ -130,6 +132,7 @@ const Wrap: FC = () => {
         placeholder={t`Enter an amount`}
         value={quantity}
         onChange={e => setQuantity(e.target.value)}
+        label=""
         labelWidth={0}
         endString={t`Max`}
         endStringOnClick={setMax}

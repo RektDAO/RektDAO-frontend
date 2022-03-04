@@ -8,7 +8,7 @@ export const StakeFiveDayYield = () => {
 
   const props: PropsOf<typeof DataRow> = { title: t`ROI (5-Day Rate)` };
 
-  if (rebaseRate) {
+  if (rebaseRate !== undefined) {
     const fiveDayRate = (Math.pow(1 + rebaseRate, 5 * 3) - 1) * 100;
     props.balance = `${formatNumber(fiveDayRate, 4)}%`;
   } else props.isLoading = true;
