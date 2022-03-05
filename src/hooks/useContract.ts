@@ -4,11 +4,11 @@ import { useMemo } from "react";
 import { abi as FUSE_PROXY_ABI } from "src/abi/FuseProxy.json";
 import { abi as IERC20_ABI } from "src/abi/IERC20.json";
 import STAKING_ABI from "src/abi/OlympusStakingv2.json";
+import { abi as SOHM_ABI } from "src/abi/OpenSOHM.json";
 import { abi as PAIR_CONTRACT_ABI } from "src/abi/PairContract.json";
-import { abi as SOHM_ABI } from "src/abi/sOhmv2.json";
 import { AddressMap } from "src/constants/addresses";
 import { NetworkId } from "src/networkDetails";
-import { FuseProxy, IERC20, OlympusStakingv2, PairContract, SOhmv2 } from "src/typechain";
+import { FuseProxy, IERC20, OlympusStakingv2, OpenSOHM, PairContract } from "src/typechain";
 
 import { useWeb3Context } from ".";
 import { useStaticProvider, useStaticProviders } from "./useStaticProvider";
@@ -57,7 +57,7 @@ const createStaticContract = <TContract extends Contract = Contract>(ABI: Contra
   return (address: string, networkId: NetworkId) => {
     const provider = useStaticProvider(networkId);
 
-    return useContract<TContract>(address, ABI, provider);
+    return useContract<TContract>(String(address), ABI, provider);
   };
 };
 
@@ -93,7 +93,7 @@ export const useMultipleContracts = <TContract extends Contract = Contract>(
   }, [addressMap, ABI, providers]);
 };
 
-export const useStaticSohmContract = createStaticContract<SOhmv2>(SOHM_ABI);
+export const useStaticSohmContract = createStaticContract<OpenSOHM>(SOHM_ABI);
 export const useStaticTokenContract = createStaticContract<IERC20>(IERC20_ABI);
 export const useStaticFuseContract = createStaticContract<FuseProxy>(FUSE_PROXY_ABI);
 export const useStaticPairContract = createStaticContract<PairContract>(PAIR_CONTRACT_ABI);

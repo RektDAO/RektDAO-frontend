@@ -138,6 +138,10 @@ export class EnvHelper {
         }
         uriPath = "https://api.avax.network/ext/bc/C/rpc/";
         break;
+      case NetworkId.AVALANCHE_TESTNET:
+        ALCHEMY_ID_LIST = [];
+        uriPath = "https://api.avax-test.network/ext/bc/C/rpc/";
+        break;
     }
 
     return ALCHEMY_ID_LIST.map(alchemyID => uriPath + alchemyID);
@@ -163,12 +167,16 @@ export class EnvHelper {
         networkFragment = "rinkeby";
         break;
       default:
-        networkFragment = "mainnet";
+        networkFragment = "";
         break;
     }
 
     // split the provided API keys on whitespace
-    if (EnvHelper.env.REACT_APP_INFURA_IDS && EnvHelper.isNotEmpty(EnvHelper.env.REACT_APP_INFURA_IDS)) {
+    if (
+      networkFragment &&
+      EnvHelper.env.REACT_APP_INFURA_IDS &&
+      EnvHelper.isNotEmpty(EnvHelper.env.REACT_APP_INFURA_IDS)
+    ) {
       INFURA_ID_LIST = EnvHelper.env.REACT_APP_INFURA_IDS.split(new RegExp(EnvHelper.whitespaceRegex));
     } else {
       INFURA_ID_LIST = [];
@@ -222,6 +230,16 @@ export class EnvHelper {
           EnvHelper.isNotEmpty(EnvHelper.env.REACT_APP_AVALANCHE_SELF_HOSTED_NODE)
         ) {
           URI_LIST = EnvHelper.env.REACT_APP_AVALANCHE_SELF_HOSTED_NODE.split(new RegExp(EnvHelper.whitespaceRegex));
+        }
+        break;
+      case NetworkId.AVALANCHE_TESTNET:
+        if (
+          EnvHelper.env.REACT_APP_AVALANCHE_TESTNET_SELF_HOSTED_NODE &&
+          EnvHelper.isNotEmpty(EnvHelper.env.REACT_APP_AVALANCHE_TESTNET_SELF_HOSTED_NODE)
+        ) {
+          URI_LIST = EnvHelper.env.REACT_APP_AVALANCHE_TESTNET_SELF_HOSTED_NODE.split(
+            new RegExp(EnvHelper.whitespaceRegex),
+          );
         }
         break;
       case NetworkId.POLYGON:
