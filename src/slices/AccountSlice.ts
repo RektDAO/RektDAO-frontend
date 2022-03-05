@@ -587,6 +587,7 @@ export const calculateUserBondDetails = createAsyncThunk(
     try {
       // Calculate bond details.
       const bondContract = bond.getContractForBond(networkID, provider);
+      if (!bondContract) return empty;
       const reserveContract = bond.getContractForReserve(networkID, provider);
       const bondDetails = await bondContract.bondInfo(address);
       const interestDue: BigNumberish = Number(bondDetails.payout.toString()) / Math.pow(10, 9);

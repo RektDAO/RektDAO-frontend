@@ -66,6 +66,7 @@ export async function getMarketPriceFromWeth(networkId: NetworkIdVal = NetworkId
   // v2 price
   const ohm_weth_address = ohm_weth.getAddressForReserve(networkId);
   const wethBondContract = ohm_weth.getContractForBond(networkId, provider);
+  if (!wethBondContract) return 0;
   const pairContract = new ethers.Contract(ohm_weth_address || "", PairContractABI, provider) as PairContract;
   const reserves = await pairContract.getReserves();
 

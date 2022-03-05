@@ -8,6 +8,7 @@ import { abi as BondOhmDaiContract } from "src/abi/bonds/OhmDaiContract.json";
 import { abi as BondOhmEthContract } from "src/abi/bonds/OhmEthContract.json";
 import { abi as FraxOhmBondContract } from "src/abi/bonds/OhmFraxContract.json";
 import { abi as BondOhmLusdContract } from "src/abi/bonds/OhmLusdContract.json";
+import { abi as WavaxBondContract } from "src/abi/bonds/WavaxContract.json";
 import { abi as ierc20Abi } from "src/abi/IERC20.json";
 import { abi as ReserveOhmDaiContract } from "src/abi/reserves/OhmDai.json";
 import { abi as ReserveOhmEthContract } from "src/abi/reserves/OhmEth.json";
@@ -225,7 +226,7 @@ export const wavax = new StableBond({
   payoutToken: "OHM",
   v2Bond: true,
   bondIconSvg: ["AVAX"],
-  bondContractABI: DaiBondContract, // TODO: add updated ABI
+  bondContractABI: WavaxBondContract,
   isBondable: {
     [NetworkId.LOCAL]: false,
     [NetworkId.MAINNET]: false,
@@ -417,6 +418,7 @@ export const eth = new CustomBond({
   },
   customTreasuryBalanceFunc: async function (this: CustomBond, NetworkId, provider) {
     const ethBondContract = this.getContractForBond(NetworkId, provider);
+    if (!ethBondContract) return 0;
     let ethPrice: BigNumberish = await ethBondContract.assetPrice();
     ethPrice = Number(ethPrice.toString()) / Math.pow(10, 8);
     const token = this.getContractForReserve(NetworkId, provider);
@@ -874,6 +876,7 @@ export const ohm_weth = new CustomBond({
   customTreasuryBalanceFunc: async function (this: CustomBond, networkId, provider) {
     if (networkId === NetworkId.MAINNET) {
       const ethBondContract = this.getContractForBond(networkId, provider);
+      if (!ethBondContract) return 0;
       let ethPrice: BigNumberish = await ethBondContract.assetPrice();
       ethPrice = Number(ethPrice.toString()) / Math.pow(10, 8);
       const token = this.getContractForReserve(networkId, provider);
@@ -956,6 +959,7 @@ export const ohm_wethOld = new CustomBond({
   customTreasuryBalanceFunc: async function (this: CustomBond, networkId, provider) {
     if (networkId === NetworkId.MAINNET) {
       const ethBondContract = this.getContractForBond(networkId, provider);
+      if (!ethBondContract) return 0;
       let ethPrice: BigNumberish = await ethBondContract.assetPrice();
       ethPrice = Number(ethPrice.toString()) / Math.pow(10, 8);
       const token = this.getContractForReserve(networkId, provider);
@@ -987,20 +991,20 @@ export const ohm_wethOld = new CustomBond({
 // Is it an LP Bond? use `new LPBond`
 // Add new bonds to this array!!
 export const allBonds = [
-  dai,
-  frax,
+  // dai,
+  // frax,
   wavax,
   chainlink,
-  eth,
-  cvx,
-  ohm_dai,
-  ohm_daiOld,
-  ohm_frax,
-  ohm_fraxOld,
-  lusd,
-  ohm_lusd,
-  ohm_weth,
-  ohm_wethOld,
+  // eth,
+  // cvx,
+  // ohm_dai,
+  // ohm_daiOld,
+  // ohm_frax,
+  // ohm_fraxOld,
+  // lusd,
+  // ohm_lusd,
+  // ohm_weth,
+  // ohm_wethOld,
 ];
 // TODO (appleseed-expiredBonds): there may be a smarter way to refactor this
 export const allExpiredBonds = [cvx_expired, fraxOld];
