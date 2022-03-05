@@ -261,7 +261,7 @@ export const wavax = new StableBond({
     },
     [NetworkId.AVALANCHE_TESTNET]: {
       bondAddress: BLANK_ADDRESS,
-      reserveAddress: "0xd00ae08403B9bbb9124bB305C09058E32C39A48c",
+      reserveAddress: addresses[NetworkId.AVALANCHE_TESTNET].RESERVETOKEN1_ADDRESS,
     },
   },
 });
@@ -309,7 +309,7 @@ export const chainlink = new StableBond({
     },
     [NetworkId.AVALANCHE_TESTNET]: {
       bondAddress: BLANK_ADDRESS,
-      reserveAddress: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
+      reserveAddress: addresses[NetworkId.AVALANCHE_TESTNET].RESERVETOKEN2_ADDRESS,
     },
   },
 });

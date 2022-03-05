@@ -66,15 +66,15 @@ const initModal = new Web3Modal({
     walletconnect: {
       package: WalletConnectProvider,
       options: {
-        // rpc: Object.fromEntries(Object.entries(NETWORKS).map(([k, v]) => [k, v.uri])),
-        rpc: {
-          1: NETWORKS[1].uri(),
-          4: NETWORKS[4].uri(),
-          42161: NETWORKS[42161].uri(),
-          421611: NETWORKS[421611].uri(),
-          43113: NETWORKS[43113].uri(),
-          43114: NETWORKS[43114].uri(),
-        },
+        rpc: Object.fromEntries(Object.entries(NETWORKS).map(([k, v]) => [k, v.uri])),
+        // rpc: {
+        //   1: NETWORKS[1].uri(),
+        //   4: NETWORKS[4].uri(),
+        //   42161: NETWORKS[42161].uri(),
+        //   421611: NETWORKS[421611].uri(),
+        //   43113: NETWORKS[43113].uri(),
+        //   43114: NETWORKS[43114].uri(),
+        // },
       },
     },
   },

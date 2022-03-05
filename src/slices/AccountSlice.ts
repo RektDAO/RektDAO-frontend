@@ -4,7 +4,7 @@ import { BigNumber, BigNumberish, ethers } from "ethers";
 import { EnvHelper } from "src/helpers/Environment";
 // import { NodeHelper } from "src/helpers/NodeHelper";
 import { RootState } from "src/store";
-import { FiatDAOContract, FuseProxy, IERC20, IERC20__factory /*, SOhmv2 , WsOHM */ } from "src/typechain";
+import { FiatDAOContract, FuseProxy, IERC20, IERC20__factory /*, OpenSOHM , WsOHM */ } from "src/typechain";
 import { GOHM__factory } from "src/typechain/factories/GOHM__factory";
 
 import { abi as fiatDAO } from "../abi/FiatDAOContract.json";
@@ -13,7 +13,7 @@ import { abi as ierc20Abi } from "../abi/IERC20.json";
 import { abi as MockSohm } from "../abi/MockSohm.json";
 import { abi as OlympusGiving } from "../abi/OlympusGiving.json";
 import { abi as OlympusMockGiving } from "../abi/OlympusMockGiving.json";
-// import { abi as sOHMv2 } from "../abi/sOhmv2.json";
+// import { abi as OpenSOHMAbi } from "../abi/OpenSOHM.json";
 // import { abi as wsOHM } from "../abi/wsOHM.json";
 import { addresses, NetworkId } from "../constants";
 import { handleContractError, setAll } from "../helpers";
@@ -511,7 +511,7 @@ export const loadAccountDetails = createAsyncThunk(
       //   ? BigNumber.from("0")
       //   : await ohmContract.allowance(address, addresses[networkID].STAKING_HELPER_ADDRESS);
 
-      // const sohmContract = new ethers.Contract(addresses[networkID].SOHM_V2 as string, sOHMv2, provider) as SOhmv2;
+      // const sohmContract = new ethers.Contract(addresses[networkID].SOHM_V2 as string, OpenSOHMAbi, provider) as OpenSOHM;
       // unstakeAllowance = !addresses[networkID].STAKING_ADDRESS
       //   ? BigNumber.from("0")
       //   : await sohmContract.allowance(address, addresses[networkID].STAKING_ADDRESS);

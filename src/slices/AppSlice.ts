@@ -4,10 +4,10 @@ import { NodeHelper } from "src/helpers/NodeHelper";
 import { RootState } from "src/store";
 
 import { abi as ierc20Abi } from "../abi/IERC20.json";
-import { abi as sOHMv2 } from "../abi/sOhmv2.json";
+import { abi as OpenSOHMAbi } from "../abi/OpenSOHM.json";
 import { addresses, EPOCHS_PER_DAY, NetworkId, NetworkIdVal, TOKEN_DECIMALS_TENS } from "../constants";
 import { getMarketPrice, getTokenPrice, setAll } from "../helpers";
-import { IERC20, OlympusStaking__factory, OlympusStakingv2__factory, SOhmv2 } from "../typechain";
+import { IERC20, OlympusStaking__factory, OlympusStakingv2__factory, OpenSOHM } from "../typechain";
 import { IBaseAsyncThunk } from "./interfaces";
 
 class ProtocolMetricsClass {
@@ -50,7 +50,11 @@ export async function getTokenMetrics(
   }
 
   const ohmMainContract = new ethers.Contract(addresses[networkID].OHM_V2 as string, ierc20Abi, provider) as IERC20;
-  const sohmMainContract = new ethers.Contract(addresses[networkID].SOHM_V2 as string, sOHMv2, provider) as SOhmv2;
+  const sohmMainContract = new ethers.Contract(
+    addresses[networkID].SOHM_V2 as string,
+    OpenSOHMAbi,
+    provider,
+  ) as OpenSOHM;
 
   const contractDai = new ethers.Contract(addresses[networkID].DAI_ADDRESS as string, ierc20Abi, provider) as IERC20;
 
