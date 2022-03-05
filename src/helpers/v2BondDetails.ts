@@ -187,6 +187,8 @@ export const v2BondDetails: { [key: number]: { [key: string]: V2BondDetails } } 
     ["0x055475920a8c93cffb64d039a8205f7acc7722d3"]: OhmDaiDetails,
   },
   [NetworkId.AVALANCHE_TESTNET]: {
+    [String(addresses[NetworkId.AVALANCHE_TESTNET].DAI_ADDRESS).toLowerCase()]: DaiDetails,
+    [String(addresses[NetworkId.AVALANCHE_TESTNET].FRAX_ADDRESS).toLowerCase()]: FraxDetails,
     [String(addresses[NetworkId.AVALANCHE_TESTNET].RESERVETOKEN1_ADDRESS).toLowerCase()]: AvaxDetails,
     [String(addresses[NetworkId.AVALANCHE_TESTNET].RESERVETOKEN2_ADDRESS).toLowerCase()]: LinkDetails,
   },

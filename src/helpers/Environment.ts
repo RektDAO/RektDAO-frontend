@@ -11,7 +11,7 @@ export class EnvHelper {
    * @returns `process.env`
    */
   static env = process.env;
-  static defaultNetworkId: number = Number(EnvHelper.env.REACT_APP_DEFAULT_CHAIN_ID) || 1;
+  static defaultNetworkId: number = Number(EnvHelper.env.REACT_APP_DEFAULT_CHAIN_ID) || 43113;
   static localNetworkId: number = Number(EnvHelper.env.REACT_APP_LOCAL_CHAIN_ID) || 1337;
   static localContract_DAI_ADDRESS = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_DAI_ADDRESS);
   static localContract_FRAX_ADDRESS = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_FRAX_ADDRESS);

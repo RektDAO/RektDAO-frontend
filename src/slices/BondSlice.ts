@@ -102,6 +102,7 @@ export const calcBondDetails = createAsyncThunk(
         valuation = 0,
         bondQuote: BigNumberish = BigNumber.from(0);
       const bondContract = bond.getContractForBond(networkID, provider);
+      if (!bondContract) return empty;
       const bondCalcContract = getBondCalculator(networkID, provider, bond.v2Bond);
 
       const terms = await bondContract.terms();
@@ -226,6 +227,10 @@ export const bondAsset = createAsyncThunk(
     // const calculatePremium = await bonding.calculatePremium();
     const signer = provider.getSigner();
     const bondContract = bond.getContractForBond(networkID, signer);
+    if (!bondContract) {
+      dispatch(error("!bondContract"));
+      return;
+    }
     const calculatePremium = await bondContract.bondPrice();
     const maxPremium = Math.round(Number(calculatePremium.toString()) * (1 + acceptedSlippage));
 
@@ -284,6 +289,10 @@ export const redeemBond = createAsyncThunk(
 
     const signer = provider.getSigner();
     const bondContract = bond.getContractForBond(networkID, signer);
+    if (!bondContract) {
+      dispatch(error("!bondContract"));
+      return;
+    }
 
     let redeemTx;
     const uaData = {
