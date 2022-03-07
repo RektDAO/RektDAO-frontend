@@ -13,7 +13,7 @@ import { Skeleton } from "@material-ui/lab";
 import { Icon, OHMTokenProps, Token as TokenSVG } from "@olympusdao/component-library";
 import { ChangeEvent, useState } from "react";
 import { useQuery } from "react-query";
-import { addresses, NETWORKS } from "src/constants";
+import { addresses, DEFAULT_CHAIN_ID, NETWORKS } from "src/constants";
 import { NetworkId } from "src/constants";
 import { formatCurrency } from "src/helpers";
 import { useAppSelector } from "src/hooks";
@@ -265,7 +265,7 @@ export const useWallet = (
   providerInitialized: boolean,
 ): Record<string, IToken> => {
   // default to mainnet while not initialized
-  const networkId = providerInitialized ? chainId : NetworkId.MAINNET;
+  const networkId = providerInitialized ? chainId : DEFAULT_CHAIN_ID;
 
   const connectedChainBalances = useAppSelector(s => s.account.balances);
   const ohmPrice = useAppSelector(s => s.app.marketPrice);

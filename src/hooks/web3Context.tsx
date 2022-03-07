@@ -2,7 +2,6 @@ import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { IFrameEthereumProvider } from "@ledgerhq/iframe-provider";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import React, { ReactElement, useCallback, useContext, useMemo, useState } from "react";
-// import { useLocation } from "react-router-dom";
 import { idFromHexString, initNetworkFunc } from "src/helpers/NetworkHelper";
 import { NodeHelper } from "src/helpers/NodeHelper";
 import { getParameterByName } from "src/helpers/QueryParameterHelper";
@@ -59,6 +58,8 @@ export const useAddress = () => {
   return address;
 };
 
+const rpcMap = Object.fromEntries(Object.entries(NETWORKS).map(([k, v]) => [k, v.uri()]));
+console.log("rpcMap: ", rpcMap);
 const initModal = new Web3Modal({
   // network: "mainnet", // optional
   cacheProvider: true, // optional
@@ -66,7 +67,7 @@ const initModal = new Web3Modal({
     walletconnect: {
       package: WalletConnectProvider,
       options: {
-        rpc: Object.fromEntries(Object.entries(NETWORKS).map(([k, v]) => [k, v.uri])),
+        rpc: rpcMap,
         // rpc: {
         //   1: NETWORKS[1].uri(),
         //   4: NETWORKS[4].uri(),
@@ -81,12 +82,15 @@ const initModal = new Web3Modal({
 });
 
 export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ children }) => {
+  const [web3Modal, setWeb3Modal] = useState<Web3Modal>(initModal);
+
   const [connected, setConnected] = useState(false);
   const [address, setAddress] = useState("");
-  console.warn("Web3ContextProvider. DEFAULT_CHAIN_ID: ", DEFAULT_CHAIN_ID);
-  const [provider, setProvider] = useState<JsonRpcProvider>(NodeHelper.getAnynetStaticProvider(DEFAULT_CHAIN_ID));
   const [networkId, setNetworkId] = useState(DEFAULT_CHAIN_ID);
-  const [networkBlockRateSeconds, setNetworkBlockRateSeconds] = useState(BLOCK_RATE_MAP[DEFAULT_CHAIN_ID]);
+  console.warn("Web3ContextProvider: DEFAULT_CHAIN_ID: ", DEFAULT_CHAIN_ID);
+  console.warn("Web3ContextProvider: networkId: ", networkId);
+  const [provider, setProvider] = useState<JsonRpcProvider>(NodeHelper.getAnynetStaticProvider(networkId));
+  const [networkBlockRateSeconds, setNetworkBlockRateSeconds] = useState(BLOCK_RATE_MAP[networkId]);
   const [networkName, setNetworkName] = useState("");
   const [providerUri, setProviderUri] = useState("");
   const [providerInitialized, setProviderInitialized] = useState(false);
@@ -94,8 +98,6 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
   const ref = getParameterByName("ref", window.location.search);
   const [referral, setReferral] = useState(ref);
   // console.log("referral", referral);
-
-  const [web3Modal, setWeb3Modal] = useState<Web3Modal>(initModal);
 
   const hasCachedProvider = (): boolean => {
     if (!web3Modal) return false;
@@ -118,12 +120,19 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
       rawProvider.on("chainChanged", async (_chainId: string) => {
         const newChainId = idFromHexString(_chainId);
         const networkHash = await initNetworkFunc({ provider });
+        console.log("networkHash (chainChanged)", networkHash);
         if (newChainId !== networkHash.networkId) {
           // then provider is out of sync, reload per metamask recommendation
           setTimeout(() => window.location.reload(), 1);
         } else {
+          // setProvider(provider);
           setNetworkId(networkHash.networkId);
-          setNetworkBlockRateSeconds(BLOCK_RATE_MAP[networkHash.networkId]);
+          // setNetworkBlockRateSeconds(BLOCK_RATE_MAP[networkHash.networkId]);
+          // setNetworkName(networkHash.networkName);
+          // setProviderUri(networkHash.uri);
+          // setProviderInitialized(networkHash.initialized);
+          // // Keep this at the bottom of the method, to ensure any repaints have the data we need
+          // setConnected(true);
         }
       });
     },
@@ -151,9 +160,9 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
     // Save everything after we've validated the right network.
     // Eventually we'll be fine without doing network validations.
     setAddress(connectedAddress);
-    const networkHash = await initNetworkFunc({ provider: connectedProvider });
     // console.log("connectedAddress", connectedAddress);
-    // console.log("networkHash", networkHash);
+    const networkHash = await initNetworkFunc({ provider: connectedProvider });
+    console.log("networkHash", networkHash);
     setNetworkId(networkHash.networkId);
     setNetworkBlockRateSeconds(BLOCK_RATE_MAP[networkHash.networkId]);
     setNetworkName(networkHash.networkName);

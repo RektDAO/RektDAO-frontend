@@ -1,11 +1,11 @@
 import { AnyAction, createAsyncThunk, createSelector, createSlice, ThunkDispatch } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
-import { NodeHelper } from "src/helpers/NodeHelper";
+// import { NodeHelper } from "src/helpers/NodeHelper";
 import { RootState } from "src/store";
 
 import { abi as ierc20Abi } from "../abi/IERC20.json";
 import { abi as OpenSOHMAbi } from "../abi/OpenSOHM.json";
-import { addresses, EPOCHS_PER_DAY, NetworkId, NetworkIdVal, TOKEN_DECIMALS_TENS } from "../constants";
+import { addresses, /*DEFAULT_CHAIN_ID,*/ EPOCHS_PER_DAY, NetworkIdVal, TOKEN_DECIMALS_TENS } from "../constants";
 import { getMarketPrice, getTokenPrice, setAll } from "../helpers";
 import { IERC20, OlympusStaking__factory, OlympusStakingv2__factory, OpenSOHM } from "../typechain";
 import { IBaseAsyncThunk } from "./interfaces";
@@ -34,8 +34,16 @@ const protocolMetricsKeys: ProtocolMetricsKeys = Object.keys(new ProtocolMetrics
 export async function getTokenMetrics(
   networkID: NetworkIdVal,
   provider: ethers.providers.StaticJsonRpcProvider | ethers.providers.JsonRpcProvider,
+  providerInitialized: boolean,
   dispatch: ThunkDispatch<unknown, unknown, AnyAction>,
 ) {
+  if (!providerInitialized) {
+    return;
+  }
+
+  console.log("getTokenMetrics: networkID", networkID);
+  const pNetworkId: number = await provider.getNetwork().then(network => network.chainId);
+  console.log("getTokenMetrics: pNetworkId", pNetworkId);
   // NOTE (appleseed): marketPrice from Graph was delayed, so get CoinGecko price
   let marketPrice = 0;
   try {
@@ -113,14 +121,13 @@ export async function getTokenMetrics(
     treasuryBalance,
     treasuryMarketValue,
     secondsToEpoch,
-    // epoch,
   } as IAppData;
   return appDetails;
 }
 
 export const loadAppDetails = createAsyncThunk(
   "app/loadAppDetails",
-  async ({ networkID, provider }: IBaseAsyncThunk, { dispatch }) => {
+  async ({ networkID, provider, providerInitialized }: IBaseAsyncThunk, { dispatch }) => {
     const protocolMetricsQuery = `
       query {
         _meta {
@@ -143,12 +150,12 @@ export const loadAppDetails = createAsyncThunk(
       }
     `;
 
-    if (!addresses[networkID].STAKING_V2) {
-      provider = NodeHelper.getMainnetStaticProvider();
-      networkID = NetworkId.MAINNET;
-    }
+    // if (!addresses[networkID].STAKING_V2) {
+    //   networkID = DEFAULT_CHAIN_ID;
+    //   provider = NodeHelper.getAnynetStaticProvider(networkID);
+    // }
 
-    if (!provider) {
+    if (!provider || !providerInitialized) {
       console.error("failed to connect to provider, please connect your wallet");
       return {
         stakingTVL: 0,
@@ -178,7 +185,9 @@ export const loadAppDetails = createAsyncThunk(
     // const treasuryMarketValue = parseFloat(metrics.treasuryMarketValue);
     // const currentBlock = parseFloat(graphData.data._meta.block.number);
 
-    const tokenMetrics = await getTokenMetrics(networkID, provider, dispatch);
+    console.log("loadAppDetails: getTokenMetrics-BEFORE: networkID", networkID);
+    const tokenMetrics = await getTokenMetrics(networkID, provider, providerInitialized, dispatch);
+    console.log("loadAppDetails: getTokenMetrics-AFTER: networkID", networkID);
 
     return tokenMetrics as IAppData;
   },
@@ -262,7 +271,6 @@ export interface IAppData {
   readonly treasuryBalance?: number;
   readonly treasuryMarketValue?: number;
   readonly secondsToEpoch?: number;
-  readonly epoch?: Record<string, number>;
 }
 
 const initialState: IAppData = {

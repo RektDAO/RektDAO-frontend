@@ -1,7 +1,9 @@
 import { EnvHelper } from "./helpers/Environment";
 
-export const DEFAULT_CHAIN_ID: number = EnvHelper.defaultNetworkId;
+export const _LOCAL_CHAIN_ID = 1337;
+export const _DEFAULT_CHAIN_ID = -1; // 43113?
 export const LOCAL_CHAIN_ID: number = EnvHelper.localNetworkId;
+export const DEFAULT_CHAIN_ID: number = EnvHelper.defaultNetworkId;
 
 export enum NetworkId {
   LOCAL = LOCAL_CHAIN_ID,

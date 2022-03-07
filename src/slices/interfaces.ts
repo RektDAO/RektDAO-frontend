@@ -17,6 +17,7 @@ export interface IJsonRPCErrorExtra extends IJsonRPCError {
 export interface IBaseAsyncThunk {
   readonly networkID: NetworkId;
   readonly provider: StaticJsonRpcProvider | JsonRpcProvider;
+  readonly providerInitialized?: boolean;
 }
 
 export interface IValueOnlyAsyncThunk extends IBaseAsyncThunk {

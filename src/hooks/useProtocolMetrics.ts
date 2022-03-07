@@ -93,12 +93,15 @@ const protocolMetricsKeys: ProtocolMetricsKeys = Object.keys(new ProtocolMetrics
 export const protocolMetricsQueryKey = () => ["useProtocolMetrics"];
 
 export const useProtocolMetrics = <TSelectData = unknown>(select: (data: ProtocolMetricsNumbers[]) => TSelectData) => {
-  const { networkId: networkID, provider } = useWeb3Context();
+  const { networkId: networkID, provider, providerInitialized } = useWeb3Context();
+  console.log("useProtocolMetrics: provider", provider);
   const dispatch = useAppDispatch();
   return useQuery<ProtocolMetricsNumbers[], Error, TSelectData>(
     protocolMetricsQueryKey(),
     async () => {
-      const tokenMetrics = (await getTokenMetrics(networkID, provider, dispatch)) as IAppData;
+      console.log("useProtocolMetrics: getTokenMetrics-BEFORE: networkID", networkID);
+      const tokenMetrics = (await getTokenMetrics(networkID, provider, providerInitialized, dispatch)) as IAppData;
+      console.log("useProtocolMetrics: getTokenMetrics-AFTER: networkID", networkID);
       const marketPrice = Number(tokenMetrics.marketPrice);
       const marketCap = Number(tokenMetrics.marketCap);
       const circSupply = Number(tokenMetrics.circSupply);
@@ -111,7 +114,6 @@ export const useProtocolMetrics = <TSelectData = unknown>(select: (data: Protoco
       const treasuryMarketValue = Number(tokenMetrics.treasuryMarketValue);
       const treasuryRiskFreeValue = treasuryMarketValue;
       const treasuryOhmDaiPOL = 100;
-      const epoch = tokenMetrics.epoch;
 
       const treasuryRunway = Number.parseFloat(String(treasuryRiskFreeValue / totalSupply));
       const runwayCurrent = Math.log(treasuryRunway) / Math.log(1 + stakingRebase) / 3;
