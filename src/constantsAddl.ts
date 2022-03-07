@@ -1,16 +1,20 @@
+import { ethers } from "ethers";
+
+import { SOHM_CONTRACT_DECIMALS } from "./constants/decimals";
 import { EnvHelper } from "./helpers/Environment";
 import { NetworkId } from "./networkId";
 
 export * from "./networkId";
 
-export const TOKEN_DECIMALS = 9;
-
-export const TOKEN_DECIMALS_TENS = 10 ** TOKEN_DECIMALS;
+export const TOKEN_DECIMALS_TENS = 10 ** SOHM_CONTRACT_DECIMALS;
 export const SECONDS_PER_DAY = 86400; // 60 * 60 * 24
 export const EPOCH_HOURS = 4; // TODO: make sure to deploy contract with this
 export const EPOCH_SECONDS = EPOCH_HOURS * 60 * 60; // 4 = 14400
 export const EPOCHS_PER_DAY = 24 / EPOCH_HOURS;
 export const BLANK_ADDRESS = "";
+export const ZERO_BALANCE = {
+  [NetworkId.LOCAL]: { data: ethers.constants.Zero },
+};
 
 // blocks per day:
 export const BLOCKS_PER_DAY_MAP: { [key: number]: number } = {

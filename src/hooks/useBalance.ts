@@ -1,19 +1,19 @@
 import { BigNumber, ethers } from "ethers";
 import { useQueries, useQuery, UseQueryResult } from "react-query";
 import { abi as IERC20_ABI } from "src/abi/IERC20.json";
-import { NetworkId } from "src/constants";
+import { NetworkId, ZERO_BALANCE } from "src/constants";
 import {
   AddressMap,
   FUSE_POOL_6_ADDRESSES,
   FUSE_POOL_18_ADDRESSES,
   FUSE_POOL_36_ADDRESSES,
   GOHM_ADDRESSES,
-  GOHM_TOKEMAK_ADDRESSES,
+  // GOHM_TOKEMAK_ADDRESSES,
   OHM_ADDRESSES,
   SOHM_ADDRESSES,
-  V1_OHM_ADDRESSES,
-  V1_SOHM_ADDRESSES,
-  WSOHM_ADDRESSES,
+  // V1_OHM_ADDRESSES,
+  // V1_SOHM_ADDRESSES,
+  // WSOHM_ADDRESSES,
 } from "src/constants/addresses";
 import { nonNullable, queryAssertion } from "src/helpers";
 import { IERC20 } from "src/typechain";
@@ -23,7 +23,7 @@ import { useMultipleContracts, useStaticFuseContract } from "./useContract";
 
 export async function balanceQueryFn(address: string, contract: IERC20 | null) {
   let res = ethers.constants.Zero;
-  if (!contract) return res;
+  if (!address || !contract) return res;
   try {
     res = await contract.balanceOf(address);
   } catch (e) {
@@ -47,7 +47,7 @@ export const useBalance = <TAddressMap extends AddressMap = AddressMap>(tokenAdd
 
   const results = useQueries(
     networkIds.map((networkId, index) => ({
-      enabled: !!address,
+      enabled: !!address && !!contracts[index],
       queryFn: () => balanceQueryFn(address, contracts[index]),
       queryKey: balanceQueryKey(address, tokenAddressMap, networkId),
     })),
@@ -64,6 +64,7 @@ export const useBalance = <TAddressMap extends AddressMap = AddressMap>(tokenAdd
  */
 export const fuseBalanceQueryKey = (address: string) => ["useFuseBalance", address].filter(nonNullable);
 export const useFuseBalance = () => {
+  return ZERO_BALANCE;
   const { address } = useWeb3Context();
   const pool6Contract = useStaticFuseContract(FUSE_POOL_6_ADDRESSES[NetworkId.MAINNET], NetworkId.MAINNET);
   const pool18Contract = useStaticFuseContract(FUSE_POOL_18_ADDRESSES[NetworkId.MAINNET], NetworkId.MAINNET);
@@ -95,7 +96,7 @@ export const useFuseBalance = () => {
 export const useOhmBalance = () => useBalance(OHM_ADDRESSES);
 export const useSohmBalance = () => useBalance(SOHM_ADDRESSES);
 export const useGohmBalance = () => useBalance(GOHM_ADDRESSES);
-export const useWsohmBalance = () => useBalance(WSOHM_ADDRESSES);
-export const useV1OhmBalance = () => useBalance(V1_OHM_ADDRESSES);
-export const useV1SohmBalance = () => useBalance(V1_SOHM_ADDRESSES);
-export const useGohmTokemakBalance = () => useBalance(GOHM_TOKEMAK_ADDRESSES);
+export const useWsohmBalance = () => ZERO_BALANCE; // useBalance(WSOHM_ADDRESSES);
+export const useV1OhmBalance = () => ZERO_BALANCE; // useBalance(V1_OHM_ADDRESSES);
+export const useV1SohmBalance = () => ZERO_BALANCE; // useBalance(V1_SOHM_ADDRESSES);
+export const useGohmTokemakBalance = () => ZERO_BALANCE; // useBalance(GOHM_TOKEMAK_ADDRESSES);
