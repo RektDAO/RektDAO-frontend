@@ -4,7 +4,7 @@ export const THE_GRAPH_URL = "https://api.thegraph.com/subgraphs/name/drondin/ol
 // NOTE could get this from an outside source since it changes slightly over time
 // export const BLOCK_RATE_SECONDS = 13.14; // TODO: remove
 
-// export const TOKEN_DECIMALS = 9; // TODO: remove (moved to constantsAddl)
+// export const TOKEN_DECIMALS = 9; // TODO: remove (use SOHM_CONTRACT_DECIMALS instead in constantsAddl)
 
 interface IPoolGraphURLS {
   [index: string]: string;
