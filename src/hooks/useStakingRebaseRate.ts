@@ -9,6 +9,7 @@ import { useStaticSohmContract, useStaticStakingContract } from "./useContract";
 export const stakingRebaseRateQueryKey = () => ["useStakingRebaseRate"];
 export const useStakingRebaseRate = () => {
   const { networkId } = useWeb3Context();
+  console.log("useStakingRebaseRate: ???-BEFORE: networkId", networkId);
   const sohmContract = useStaticSohmContract(SOHM_ADDRESSES[networkId], networkId);
   const stakingContract = useStaticStakingContract(STAKING_ADDRESSES[networkId], networkId);
 

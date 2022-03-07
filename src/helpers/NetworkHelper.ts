@@ -10,38 +10,21 @@ interface IGetCurrentNetwork {
 
 export const initNetworkFunc = async ({ provider }: IGetCurrentNetwork) => {
   try {
-    let networkName: string;
+    const id: number = await provider.getNetwork().then(network => network.chainId);
+    let networkName: string = NETWORKS[id]?.chainName;
     let uri: string;
     let supported = true;
-    const id: number = await provider.getNetwork().then(network => network.chainId);
     switch (id) {
       case NetworkId.LOCAL:
-        networkName = NETWORKS[id].chainName;
-        uri = NodeHelper.getMainnetURI(id);
-        break;
       case NetworkId.MAINNET:
-        networkName = NETWORKS[id].chainName;
-        uri = NodeHelper.getMainnetURI(id);
-        break;
       case NetworkId.TESTNET_RINKEBY:
-        networkName = NETWORKS[id].chainName;
-        uri = NodeHelper.getMainnetURI(id);
-        break;
+      case NetworkId.AVALANCHE:
+      case NetworkId.AVALANCHE_TESTNET:
       case NetworkId.ARBITRUM:
-        networkName = NETWORKS[id].chainName;
         uri = NodeHelper.getMainnetURI(id);
         break;
       case NetworkId.ARBITRUM_TESTNET:
-        networkName = NETWORKS[id].chainName;
         uri = EnvHelper.alchemyArbitrumTestnetURI;
-        break;
-      case NetworkId.AVALANCHE_TESTNET:
-        networkName = NETWORKS[id].chainName;
-        uri = EnvHelper.alchemyAvalancheTestnetURI;
-        break;
-      case NetworkId.AVALANCHE:
-        networkName = NETWORKS[id].chainName;
-        uri = NodeHelper.getMainnetURI(id);
         break;
       default:
         supported = false;

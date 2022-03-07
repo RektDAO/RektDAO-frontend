@@ -18,6 +18,7 @@ import {
   addresses,
   BLOCK_RATE_MAP,
   BLOCKS_PER_EPOCH_MAP,
+  DEFAULT_CHAIN_ID,
   NetworkId,
   NetworkIdVal,
   TOKEN_DECIMALS_TENS,
@@ -31,7 +32,7 @@ import { NodeHelper } from "./NodeHelper";
  * gets marketPrice from Ohm-DAI v2
  * @returns Number like 333.33
  */
-export async function getMarketPrice(networkId: NetworkIdVal = NetworkId.MAINNET) {
+export async function getMarketPrice(networkId: NetworkIdVal = DEFAULT_CHAIN_ID) {
   // v2 price
   if (ohm_dai.getIsV2()) {
     return getMarketPriceOf(networkId, String(addresses[networkId].DAI_ADDRESS));
@@ -61,7 +62,7 @@ export async function getMarketPriceOf(networkId: NetworkIdVal, contractAddress:
   return marketPrice;
 }
 
-export async function getMarketPriceFromWeth(networkId: NetworkIdVal = NetworkId.MAINNET) {
+export async function getMarketPriceFromWeth(networkId: NetworkIdVal = DEFAULT_CHAIN_ID) {
   const provider = NodeHelper.getAnynetStaticProvider(networkId);
   // v2 price
   const ohm_weth_address = ohm_weth.getAddressForReserve(networkId);
@@ -78,7 +79,7 @@ export async function getMarketPriceFromWeth(networkId: NetworkIdVal = NetworkId
   return marketPrice;
 }
 
-export async function getV1MarketPrice(networkId: NetworkIdVal = NetworkId.MAINNET) {
+export async function getV1MarketPrice(networkId: NetworkIdVal = DEFAULT_CHAIN_ID) {
   const provider = NodeHelper.getAnynetStaticProvider(networkId);
   // v1 price
   const ohm_dai_address = ohm_daiOld.getAddressForReserve(networkId);
@@ -189,14 +190,14 @@ export function trim(number = 0, precision = 0) {
   return trimmedNumber;
 }
 
-export function getRebaseBlock(currentBlock: number, networkId: NetworkIdVal = NetworkId.MAINNET) {
+export function getRebaseBlock(currentBlock: number, networkId: NetworkIdVal = DEFAULT_CHAIN_ID) {
   return currentBlock + BLOCKS_PER_EPOCH_MAP[networkId] - (currentBlock % BLOCKS_PER_EPOCH_MAP[networkId]);
 }
 
 export function secondsUntilBlock(
   startBlock: number,
   endBlock: number,
-  networkId: NetworkIdVal = NetworkId.MAINNET,
+  networkId: NetworkIdVal = DEFAULT_CHAIN_ID,
 ): number {
   const blocksAway = endBlock - startBlock;
   const secondsAway = blocksAway * BLOCK_RATE_MAP[networkId];

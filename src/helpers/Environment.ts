@@ -1,4 +1,4 @@
-import { NetworkId } from "src/networkDetails";
+import { _DEFAULT_CHAIN_ID, _LOCAL_CHAIN_ID, NetworkId } from "src/networkDetails";
 
 /**
  * Access `process.env` in an environment helper
@@ -11,8 +11,9 @@ export class EnvHelper {
    * @returns `process.env`
    */
   static env = process.env;
-  static defaultNetworkId: number = Number(EnvHelper.env.REACT_APP_DEFAULT_CHAIN_ID) || 43113;
-  static localNetworkId: number = Number(EnvHelper.env.REACT_APP_LOCAL_CHAIN_ID) || 1337;
+
+  static localNetworkId: number = Number(EnvHelper.env.REACT_APP_LOCAL_CHAIN_ID) || _LOCAL_CHAIN_ID;
+  static defaultNetworkId: number = Number(EnvHelper.env.REACT_APP_DEFAULT_CHAIN_ID) || _DEFAULT_CHAIN_ID;
   static localContract_DAI_ADDRESS = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_DAI_ADDRESS);
   static localContract_FRAX_ADDRESS = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_FRAX_ADDRESS);
   static localContract_OHM_V2 = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_OHM_V2);
@@ -28,7 +29,7 @@ export class EnvHelper {
 
   // static alchemyEthereumTestnetURI = `https://eth-rinkeby.alchemyapi.io/v2/${EnvHelper.env.REACT_APP_ETHEREUM_TESTNET_ALCHEMY}`;
   static alchemyArbitrumTestnetURI = `https://arb-rinkeby.g.alchemy.com/v2/${EnvHelper.env.REACT_APP_ARBITRUM_TESTNET_ALCHEMY}`;
-  static alchemyAvalancheTestnetURI = ``;
+  // static alchemyAvalancheTestnetURI = ``;
 
   static whitespaceRegex = /\s+/;
 
@@ -115,8 +116,20 @@ export class EnvHelper {
         }
         uriPath = "https://arb-mainnet.alchemyapi.io/v2/";
         break;
+      // case NetworkId.ARBITRUM_TESTNET:
+      //   if (
+      //     EnvHelper.env.REACT_APP_ARBITRUM_TESTNET_ALCHEMY_IDS &&
+      //     EnvHelper.isNotEmpty(EnvHelper.env.REACT_APP_ARBITRUM_TESTNET_ALCHEMY_IDS)
+      //   ) {
+      //     ALCHEMY_ID_LIST = EnvHelper.env.REACT_APP_ARBITRUM_TESTNET_ALCHEMY_IDS.split(EnvHelper.whitespaceRegex);
+      //   } else {
+      //     ALCHEMY_ID_LIST = ["7Fz2U-NiLphizjlRkJzWtK5jef-5rX-G"];
+      //   }
+      //   uriPath = "https://arb-rinkeby.g.alchemy.com/v2/";
+      //   break;
       case NetworkId.POLYGON:
         if (
+          EnvHelper.env.NODE_ENV !== "development" &&
           EnvHelper.env.REACT_APP_POLYGON_ALCHEMY_IDS &&
           EnvHelper.isNotEmpty(EnvHelper.env.REACT_APP_POLYGON_ALCHEMY_IDS)
         ) {
@@ -134,13 +147,20 @@ export class EnvHelper {
         ) {
           ALCHEMY_ID_LIST = EnvHelper.env.REACT_APP_AVALANCHE_ALCHEMY_IDS.split(EnvHelper.whitespaceRegex);
         } else {
-          ALCHEMY_ID_LIST = [];
+          ALCHEMY_ID_LIST = [""];
         }
-        uriPath = "https://api.avax.network/ext/bc/C/rpc/";
+        uriPath = "https://api.avax.network/ext/bc/C/rpc";
         break;
       case NetworkId.AVALANCHE_TESTNET:
-        ALCHEMY_ID_LIST = [];
-        uriPath = "https://api.avax-test.network/ext/bc/C/rpc/";
+        if (
+          EnvHelper.env.REACT_APP_AVALANCHE_TESTNET_ALCHEMY_IDS &&
+          EnvHelper.isNotEmpty(EnvHelper.env.REACT_APP_AVALANCHE_TESTNET_ALCHEMY_IDS)
+        ) {
+          ALCHEMY_ID_LIST = EnvHelper.env.REACT_APP_AVALANCHE_TESTNET_ALCHEMY_IDS.split(EnvHelper.whitespaceRegex);
+        } else {
+          ALCHEMY_ID_LIST = [""];
+        }
+        uriPath = "https://api.avax-test.network/ext/bc/C/rpc";
         break;
     }
 

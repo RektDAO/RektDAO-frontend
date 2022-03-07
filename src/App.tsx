@@ -135,7 +135,7 @@ function App() {
 
   const loadApp = useCallback(
     loadProvider => {
-      dispatch(loadAppDetails({ networkID: networkId, provider: loadProvider }));
+      dispatch(loadAppDetails({ networkID: networkId, provider: loadProvider, providerInitialized }));
       if (addresses[networkId].STAKING_V2) {
         bonds.map(bond => {
           // NOTE (appleseed): getBondability & getLOLability control which bonds are active in the view for Bonds V1
@@ -147,7 +147,7 @@ function App() {
         dispatch(getAllBonds({ provider: loadProvider, networkID: networkId, address }));
       }
     },
-    [networkId, address, bonds, dispatch],
+    [networkId, address, providerInitialized, bonds, dispatch],
   );
 
   const loadAccount = useCallback(
@@ -175,7 +175,7 @@ function App() {
   );
 
   const oldAssetsDetected = useAppSelector(state => {
-    if (networkId && addresses[networkId].PT_TOKEN_ADDRESS) {
+    if (networkId > 0 && addresses[networkId].PT_TOKEN_ADDRESS) {
       return (
         state.account.balances &&
         (Number(state.account.balances.sohmV1) ||

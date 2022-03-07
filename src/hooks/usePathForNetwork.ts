@@ -18,40 +18,41 @@ export function usePathForNetwork({
     // do nothing if networkID is -1 since that's a default state
     // if (networkID === -1) return;
 
+    const pathUnavail = "/wrap";
     switch (pathName) {
       case "stake":
         if (VIEWS_FOR_NETWORK[networkID] && VIEWS_FOR_NETWORK[networkID].stake) {
           break;
         } else {
-          history.push("/wrap");
+          history.push(pathUnavail);
           break;
         }
       case "bonds-v1":
         if (VIEWS_FOR_NETWORK[networkID] && VIEWS_FOR_NETWORK[networkID].bonds) {
           break;
         } else {
-          history.push("/wrap");
+          history.push(pathUnavail);
           break;
         }
       case "bonds":
         if (VIEWS_FOR_NETWORK[networkID] && VIEWS_FOR_NETWORK[networkID].bondsV2) {
           break;
         } else {
-          history.push("/wrap");
+          history.push(pathUnavail);
           break;
         }
       case "33-t":
         if (VIEWS_FOR_NETWORK[networkID] && VIEWS_FOR_NETWORK[networkID].threeTogether) {
           break;
         } else {
-          history.push("/wrap");
+          history.push(pathUnavail);
           break;
         }
       case "zap":
         if (VIEWS_FOR_NETWORK[networkID] && VIEWS_FOR_NETWORK[networkID].zap) {
           break;
         } else {
-          history.push("/wrap");
+          history.push(pathUnavail);
           break;
         }
       default:

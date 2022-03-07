@@ -43,11 +43,16 @@ export const balancesOf = async (address: string, NetworkId: NetworkId): Promise
   });
 };
 
+// https://www.covalenthq.com/docs/networks/
+// TODO: update these when new chains launch
 const Networks = [
-  NetworkId.MAINNET,
+  // NetworkId.MAINNET,
   NetworkId.AVALANCHE,
-  NetworkId.ARBITRUM,
-  NetworkId.POLYGON,
+  NetworkId.AVALANCHE_TESTNET,
+  // NetworkId.ARBITRUM,
+  // NetworkId.ARBITRUM_TESTNET,
+  // NetworkId.POLYGON,
+  // NetworkId.POLYGON_TESTNET,
   // covalent does not support rinkeby
   // ...(process.env.NODE_ENV === "development" ? [NetworkId.AvalancheTestnet, NetworkId.ArbitrumTestnet] : []),
 ];
