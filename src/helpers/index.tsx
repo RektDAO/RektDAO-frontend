@@ -21,6 +21,7 @@ import {
   DEFAULT_CHAIN_ID,
   NetworkId,
   NetworkIdVal,
+  NETWORKS,
   TOKEN_DECIMALS_TENS,
   TokenSymbol,
 } from "../constants";
@@ -107,14 +108,13 @@ export async function getTokenPrice(tokenId = "olympus"): Promise<number> {
   } catch (e) {
     // console.warn(`Error accessing OHM API ${priceApiURL} . Falling back to coingecko API`, e);
     // fallback to coingecko
-    const cgResp = (await axios.get(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${tokenId}&vs_currencies=usd`,
-    )) as {
+    const cgRespRaw = await axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${tokenId}&vs_currencies=usd`);
+    const cgResp = cgRespRaw as {
       data: { [id: string]: { usd: number } };
     };
     tokenPrice = cgResp.data[tokenId].usd;
   } finally {
-    // console.info(`Token price from coingecko: ${tokenPrice}`);
+    console.info(`Token price from coingecko: ${tokenId} = ${tokenPrice}`);
     return tokenPrice;
   }
 }
@@ -154,10 +154,11 @@ export async function getTokenIdByContract(contractAddress: string): Promise<str
 }
 
 export const getEtherscanUrl = ({ bond, networkId }: { bond: IBondV2; networkId: NetworkId }) => {
-  if (networkId === NetworkId.TESTNET_RINKEBY) {
-    return `https://rinkeby.etherscan.io/address/${bond.quoteToken}`;
-  }
-  return `https://etherscan.io/address/${bond.quoteToken}`;
+  return NETWORKS[networkId].blockExplorerUrls[0].replace("#/", "") + `address/${bond.quoteToken}`;
+  // switch (networkId) {
+  //   case NetworkId.TESTNET_RINKEBY:
+  // }
+  // return `https://etherscan.io/address/${bond.quoteToken}`;
 };
 
 export function shorten(str: string) {

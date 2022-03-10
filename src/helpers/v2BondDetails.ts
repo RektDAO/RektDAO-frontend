@@ -70,10 +70,10 @@ const EthDetails: V2BondDetails = {
 };
 
 const AvaxDetails: V2BondDetails = {
-  name: "AVAX",
+  name: "WAVAX",
   bondIconSvg: ["AVAX"],
   pricingFunction: async () => {
-    return getTokenPrice("avalanche");
+    return getTokenPrice("avalanche-2");
   },
   isLP: false,
   lpUrl: {},

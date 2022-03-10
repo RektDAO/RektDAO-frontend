@@ -8,7 +8,7 @@ import { abi as BondOhmDaiContract } from "src/abi/bonds/OhmDaiContract.json";
 import { abi as BondOhmEthContract } from "src/abi/bonds/OhmEthContract.json";
 import { abi as FraxOhmBondContract } from "src/abi/bonds/OhmFraxContract.json";
 import { abi as BondOhmLusdContract } from "src/abi/bonds/OhmLusdContract.json";
-import { abi as WavaxBondContract } from "src/abi/bonds/WavaxContract.json";
+// import { abi as WavaxBondContract } from "src/abi/bonds/WavaxContract.json";
 import { abi as ierc20Abi } from "src/abi/IERC20.json";
 import { abi as ReserveOhmDaiContract } from "src/abi/reserves/OhmDai.json";
 import { abi as ReserveOhmEthContract } from "src/abi/reserves/OhmEth.json";
@@ -226,7 +226,7 @@ export const wavax = new StableBond({
   payoutToken: TokenSymbol.OHM,
   v2Bond: true,
   bondIconSvg: ["AVAX"],
-  bondContractABI: WavaxBondContract,
+  bondContractABI: DaiBondContract, // TODO: add updated ABI
   isBondable: {
     [NetworkId.LOCAL]: false,
     [NetworkId.MAINNET]: false,
@@ -991,8 +991,8 @@ export const ohm_wethOld = new CustomBond({
 // Is it an LP Bond? use `new LPBond`
 // Add new bonds to this array!!
 export const allBonds = [
-  // dai,
-  // frax,
+  dai,
+  frax,
   wavax,
   chainlink,
   // eth,
