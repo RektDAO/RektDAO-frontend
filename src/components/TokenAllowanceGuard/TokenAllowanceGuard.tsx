@@ -68,15 +68,15 @@ export const TokenAllowanceGuard: React.FC<{ token: TokenSymbolVal }> = props =>
                 <>
                   <Trans>First time staking</Trans> <b>{TokenSymbol.OHM}</b>?
                   <br />
-                  <Trans>Please approve {APP_NAME} to use your</Trans> <b>{TokenSymbol.OHM}</b>{" "}
+                  <Trans>Please approve</Trans> {APP_NAME} <Trans>to use your</Trans> <b>{TokenSymbol.OHM}</b>{" "}
                   <Trans>for staking</Trans>.
                 </>
               ) : (
                 <>
                   <Trans>First time unstaking</Trans> <b>{props.token}</b>?
                   <br />
-                  <Trans>Please approve {APP_NAME} to use your</Trans> <b>{props.token}</b> <Trans>for unstaking</Trans>
-                  .
+                  <Trans>Please approve</Trans> {APP_NAME} <Trans>to use your</Trans> <b>{props.token}</b>{" "}
+                  <Trans>for unstaking</Trans>.
                 </>
               )}
             </Typography>
