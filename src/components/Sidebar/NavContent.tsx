@@ -18,7 +18,7 @@ import { NavItem } from "@olympusdao/component-library";
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
-import { addresses, NetworkId } from "src/constants";
+import { addresses, APP_URL_ROOT } from "src/constants";
 import { EnvHelper } from "src/helpers/Environment";
 import { useAppSelector } from "src/hooks";
 import { useWeb3Context } from "src/hooks/web3Context";
@@ -60,7 +60,7 @@ const NavContent: React.FC<NavContentProps> = ({ handleDrawerToggle }) => {
       <Box className="dapp-sidebar-inner" display="flex" justifyContent="space-between" flexDirection="column">
         <div className="dapp-menu-top">
           <Box className="branding-header">
-            <Link href="https://olympusdao.finance" target="_blank">
+            <Link href={`https://${APP_URL_ROOT}`} target="_blank">
               <SvgIcon
                 color="primary"
                 component={OlympusIcon}
@@ -121,17 +121,19 @@ const NavContent: React.FC<NavContentProps> = ({ handleDrawerToggle }) => {
                     <NavItem to="/give" icon="give" label={t`Give`} chip={t`New`} />
                   )}
                   <NavItem to="/wrap" icon="wrap" label={t`Wrap`} />
-                  <NavItem
-                    href={"https://synapseprotocol.com/?inputCurrency=gOHM&outputCurrency=gOHM&outputChain=43114"}
-                    icon="bridge"
-                    label={t`Bridge`}
-                  />
+                  {EnvHelper.isBridgeEnabled(location.search) && (
+                    <NavItem
+                      href={"https://synapseprotocol.com/?inputCurrency=gOHM&outputCurrency=gOHM&outputChain=43114"}
+                      icon="bridge"
+                      label={t`Bridge`}
+                    />
+                  )}
                   <Box className="menu-divider">
                     <Divider />
                   </Box>
                   {EnvHelper.isProEnabled(location.search) ? (
                     <>
-                      <NavItem href="https://pro.olympusdao.finance/" icon="olympus" label={t`Olympus Pro`} />
+                      <NavItem href={`https://pro.${APP_URL_ROOT}/`} icon="olympus" label={t`Olympus Pro`} />
                       {/* <NavItem to="/33-together" icon="33-together" label={t`3,3 Together`} /> */}
                       <Box className="menu-divider">
                         <Divider />

@@ -1,4 +1,7 @@
-import { _DEFAULT_CHAIN_ID, _LOCAL_CHAIN_ID, NetworkId } from "src/networkDetails";
+import { NetworkId } from "src/networkDetails";
+
+export const LOCAL_CHAIN_ID_FALLBACK = 1337;
+export const DEFAULT_CHAIN_ID_FALLBACK = -1; // 43113?
 
 /**
  * Access `process.env` in an environment helper
@@ -12,8 +15,11 @@ export class EnvHelper {
    */
   static env = process.env;
 
-  static localNetworkId: number = Number(EnvHelper.env.REACT_APP_LOCAL_CHAIN_ID) || _LOCAL_CHAIN_ID;
-  static defaultNetworkId: number = Number(EnvHelper.env.REACT_APP_DEFAULT_CHAIN_ID) || _DEFAULT_CHAIN_ID;
+  static appName = String(EnvHelper.env.REACT_APP_NAME);
+  static appUrl = String(EnvHelper.env.REACT_APP_URL_APP);
+  static appUrlRoot = String(EnvHelper.env.REACT_APP_URL_ROOT);
+  static localNetworkId: number = Number(EnvHelper.env.REACT_APP_LOCAL_CHAIN_ID) || LOCAL_CHAIN_ID_FALLBACK;
+  static defaultNetworkId: number = Number(EnvHelper.env.REACT_APP_DEFAULT_CHAIN_ID) || DEFAULT_CHAIN_ID_FALLBACK;
   static localContract_DAI_ADDRESS = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_DAI_ADDRESS);
   static localContract_FRAX_ADDRESS = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_FRAX_ADDRESS);
   static localContract_OHM_V2 = String(EnvHelper.env.REACT_APP_LOCAL_CONTRACT_OHM_V2);
@@ -71,15 +77,8 @@ export class EnvHelper {
     // If in production, split the provided API keys on whitespace. Otherwise use default.
     switch (networkId) {
       case NetworkId.LOCAL:
-        if (
-          EnvHelper.env.REACT_APP_ETHEREUM_ALCHEMY_IDS &&
-          EnvHelper.isNotEmpty(EnvHelper.env.REACT_APP_ETHEREUM_ALCHEMY_IDS)
-        ) {
-          ALCHEMY_ID_LIST = EnvHelper.env.REACT_APP_ETHEREUM_ALCHEMY_IDS.split(EnvHelper.whitespaceRegex);
-        } else {
-          ALCHEMY_ID_LIST = ["_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC"];
-        }
-        uriPath = "https://eth-mainnet.alchemyapi.io/v2/";
+        ALCHEMY_ID_LIST = [""];
+        uriPath = "http://localhost:8545";
         break;
       case NetworkId.MAINNET:
         if (
@@ -311,11 +310,11 @@ export class EnvHelper {
    * @returns
    */
   static isGiveEnabled(url: string): boolean {
-    const giveEnabled = EnvHelper.env.REACT_APP_GIVE_ENABLED;
+    const enabled = EnvHelper.env.REACT_APP_GIVE_ENABLED;
 
     // If the variable isn't set, we default to true.
     // We also want to be case-insensitive.
-    if (giveEnabled !== undefined && giveEnabled.toLowerCase() === "false") return false;
+    if (enabled !== undefined && enabled.toLowerCase() === "false") return false;
 
     return true;
   }
@@ -330,11 +329,30 @@ export class EnvHelper {
    * @returns
    */
   static isProEnabled(url: string): boolean {
-    const proEnabled = EnvHelper.env.REACT_APP_PRO_ENABLED;
+    const enabled = EnvHelper.env.REACT_APP_PRO_ENABLED;
 
     // If the variable isn't set, we default to true.
     // We also want to be case-insensitive.
-    if (proEnabled !== undefined && proEnabled.toLowerCase() === "false") return false;
+    if (enabled !== undefined && enabled.toLowerCase() === "false") return false;
+
+    return true;
+  }
+
+  /**
+   * Indicates whether the Bridge feature is enabled (default: true).
+   *
+   * The feature is disabled when:
+   * - REACT_APP_BRIDGE_ENABLED is false
+   *
+   * @param url
+   * @returns
+   */
+  static isBridgeEnabled(url: string): boolean {
+    const enabled = EnvHelper.env.REACT_APP_BRIDGE_ENABLED;
+
+    // If the variable isn't set, we default to true.
+    // We also want to be case-insensitive.
+    if (enabled !== undefined && enabled.toLowerCase() === "false") return false;
 
     return true;
   }

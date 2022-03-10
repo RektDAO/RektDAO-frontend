@@ -31,6 +31,7 @@ type onChainProvider = {
   networkName: string;
   providerUri: string;
   providerInitialized: boolean;
+  networkIdExists: boolean;
   referral?: string | null;
 };
 
@@ -90,6 +91,7 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
   console.warn("Web3ContextProvider: DEFAULT_CHAIN_ID: ", DEFAULT_CHAIN_ID);
   console.warn("Web3ContextProvider: networkId: ", networkId);
   const [provider, setProvider] = useState<JsonRpcProvider>(NodeHelper.getAnynetStaticProvider(networkId));
+  const [networkIdExists, setNetworkIdExists] = useState(networkId > 0);
   const [networkBlockRateSeconds, setNetworkBlockRateSeconds] = useState(BLOCK_RATE_MAP[networkId]);
   const [networkName, setNetworkName] = useState("");
   const [providerUri, setProviderUri] = useState("");
@@ -125,14 +127,7 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
           // then provider is out of sync, reload per metamask recommendation
           setTimeout(() => window.location.reload(), 1);
         } else {
-          // setProvider(provider);
           setNetworkId(networkHash.networkId);
-          // setNetworkBlockRateSeconds(BLOCK_RATE_MAP[networkHash.networkId]);
-          // setNetworkName(networkHash.networkName);
-          // setProviderUri(networkHash.uri);
-          // setProviderInitialized(networkHash.initialized);
-          // // Keep this at the bottom of the method, to ensure any repaints have the data we need
-          // setConnected(true);
         }
       });
     },
@@ -143,10 +138,15 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
   const connect = useCallback(async () => {
     // handling Ledger Live;
     let rawProvider;
-    if (isIframe()) {
-      rawProvider = new IFrameEthereumProvider();
-    } else {
-      rawProvider = await web3Modal.connect();
+    try {
+      if (isIframe()) {
+        rawProvider = new IFrameEthereumProvider();
+      } else {
+        rawProvider = await web3Modal.connect();
+      }
+    } catch (e) {
+      console.warn("Wallet not connected. Please connect your wallet.");
+      return undefined;
     }
 
     // new _initListeners implementation matches Web3Modal Docs
@@ -164,6 +164,7 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
     const networkHash = await initNetworkFunc({ provider: connectedProvider });
     console.log("networkHash", networkHash);
     setNetworkId(networkHash.networkId);
+    setNetworkIdExists(networkHash.networkId > 0);
     setNetworkBlockRateSeconds(BLOCK_RATE_MAP[networkHash.networkId]);
     setNetworkName(networkHash.networkName);
     setProviderUri(networkHash.uri);
@@ -196,6 +197,7 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
       networkName,
       providerUri,
       providerInitialized,
+      networkIdExists,
       referral,
     }),
     [
@@ -210,6 +212,7 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
       networkName,
       providerUri,
       providerInitialized,
+      networkIdExists,
       referral,
     ],
   );

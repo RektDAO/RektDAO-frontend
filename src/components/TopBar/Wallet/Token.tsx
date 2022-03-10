@@ -13,7 +13,7 @@ import { Skeleton } from "@material-ui/lab";
 import { Icon, OHMTokenProps, Token as TokenSVG } from "@olympusdao/component-library";
 import { ChangeEvent, useState } from "react";
 import { useQuery } from "react-query";
-import { addresses, DEFAULT_CHAIN_ID, NETWORKS } from "src/constants";
+import { addresses, DEFAULT_CHAIN_ID, NETWORKS, TokenSymbol } from "src/constants";
 import { NetworkId } from "src/constants";
 import { formatCurrency } from "src/helpers";
 import { useAppSelector } from "src/hooks";
@@ -291,7 +291,7 @@ export const useWallet = (
       decimals: 9,
     },
     ohm: {
-      symbol: "OHM",
+      symbol: TokenSymbol.OHM,
       address: addresses[networkId].OHM_V2,
       balance: connectedChainBalances.ohm,
       price: ohmPrice || 0,
@@ -299,7 +299,7 @@ export const useWallet = (
       decimals: 9,
     },
     sohm: {
-      symbol: "sOHM",
+      symbol: TokenSymbol.SOHM,
       address: addresses[networkId].SOHM_V2,
       balance: connectedChainBalances.sohm,
       price: ohmPrice || 0,
@@ -327,7 +327,7 @@ export const useWallet = (
       decimals: 9,
     },
     gohm: {
-      symbol: "gOHM",
+      symbol: TokenSymbol.GOHM,
       address: addresses[networkId].GOHM_ADDRESS,
       balance: connectedChainBalances.gohm,
       price: (ohmPrice || 0) * Number(currentIndex || 0),

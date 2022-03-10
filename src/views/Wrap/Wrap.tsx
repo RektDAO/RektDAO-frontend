@@ -11,7 +11,7 @@ import { useAppSelector } from "src/hooks";
 import { useWeb3Context } from "src/hooks/web3Context";
 import { isPendingTxn, txnButtonTextMultiType } from "src/slices/PendingTxnsSlice";
 
-import { NetworkId, NETWORKS } from "../../constants";
+import { NetworkId, NETWORKS, TokenSymbol } from "../../constants";
 import { formatCurrency, trim } from "../../helpers";
 import { switchNetwork } from "../../helpers/NetworkHelper";
 import { changeApproval, changeWrapV2 } from "../../slices/WrapThunk";
@@ -22,13 +22,13 @@ const Wrap: FC = () => {
   const { provider, address, connect, networkId } = useWeb3Context();
 
   const [, setZoomed] = useState<boolean>(false);
-  const [assetFrom, setAssetFrom] = useState<string>("sOHM");
-  const [assetTo, setAssetTo] = useState<string>("gOHM");
+  const [assetFrom, setAssetFrom] = useState<string>(TokenSymbol.SOHM);
+  const [assetTo, setAssetTo] = useState<string>(TokenSymbol.GOHM);
   const [quantity, setQuantity] = useState<string>("");
 
   const chooseCurrentAction = () => {
-    if (assetFrom === "sOHM") return "Wrap from";
-    if (assetTo === "sOHM") return "Unwrap from";
+    if (assetFrom === TokenSymbol.SOHM) return "Wrap from";
+    if (assetTo === TokenSymbol.SOHM) return "Unwrap from";
     return "Transform";
   };
   const currentAction = chooseCurrentAction();
@@ -52,11 +52,13 @@ const Wrap: FC = () => {
   }, [networkId]);
 
   const wrapButtonText =
-    assetTo === "gOHM" ? (assetFrom === "wsOHM" ? "Migrate" : "Wrap") + " to gOHM" : `${currentAction} ${assetFrom}`;
+    assetTo === TokenSymbol.GOHM
+      ? (assetFrom === "wsOHM" ? "Migrate" : "Wrap") + ` to ${TokenSymbol.GOHM}`
+      : `${currentAction} ${assetFrom}`;
 
   const setMax = () => {
-    if (assetFrom === "sOHM") setQuantity(sohmBalance);
-    if (assetFrom === "gOHM") setQuantity(gohmBalance);
+    if (assetFrom === TokenSymbol.SOHM) setQuantity(sohmBalance);
+    if (assetFrom === TokenSymbol.GOHM) setQuantity(gohmBalance);
   };
 
   const handleSwitchChain = (id: number) => {
@@ -66,8 +68,9 @@ const Wrap: FC = () => {
   };
 
   const hasCorrectAllowance = useCallback(() => {
-    if (assetFrom === "sOHM" && assetTo === "gOHM") return wrapSohmAllowance > Number(sohmBalance);
-    if (assetFrom === "gOHM" && assetTo === "sOHM") return unwrapGohmAllowance > Number(gohmBalance);
+    if (assetFrom === TokenSymbol.SOHM && assetTo === TokenSymbol.GOHM) return wrapSohmAllowance > Number(sohmBalance);
+    if (assetFrom === TokenSymbol.GOHM && assetTo === TokenSymbol.SOHM)
+      return unwrapGohmAllowance > Number(gohmBalance);
 
     return 0;
   }, [unwrapGohmAllowance, wrapSohmAllowance, assetTo, assetFrom, sohmBalance, gohmBalance]);
@@ -96,27 +99,27 @@ const Wrap: FC = () => {
   };
 
   const approveCorrectToken = () => {
-    if (assetFrom === "sOHM" && assetTo === "gOHM") approveWrap("sOHM");
-    if (assetFrom === "gOHM" && assetTo === "sOHM") approveWrap("gOHM");
+    if (assetFrom === TokenSymbol.SOHM && assetTo === TokenSymbol.GOHM) approveWrap(TokenSymbol.SOHM);
+    if (assetFrom === TokenSymbol.GOHM && assetTo === TokenSymbol.SOHM) approveWrap(TokenSymbol.GOHM);
   };
 
   const chooseCorrectWrappingFunction = () => {
-    if (assetFrom === "sOHM" && assetTo === "gOHM") wrapSohm();
-    if (assetFrom === "gOHM" && assetTo === "sOHM") unwrapGohm();
+    if (assetFrom === TokenSymbol.SOHM && assetTo === TokenSymbol.GOHM) wrapSohm();
+    if (assetFrom === TokenSymbol.GOHM && assetTo === TokenSymbol.SOHM) unwrapGohm();
   };
 
   const chooseInputArea = () => {
     if (!address || isAllowanceDataLoading) return <Skeleton width="150px" />;
     if (assetFrom === assetTo) return "";
-    if (!hasCorrectAllowance() && assetTo === "gOHM")
+    if (!hasCorrectAllowance() && assetTo === TokenSymbol.GOHM)
       return (
         <div className="no-input-visible">
-          First time wrapping to <b>gOHM</b>?
+          First time wrapping to <b>{TokenSymbol.GOHM}</b>?
           <br />
           Please approve Olympus to use your <b>{assetFrom}</b> for this transaction.
         </div>
       );
-    else if (!hasCorrectAllowance() && assetTo === "sOHM")
+    else if (!hasCorrectAllowance() && assetTo === TokenSymbol.SOHM)
       return (
         <div className="no-input-visible">
           First time unwrapping <b>{assetFrom}</b>?
@@ -181,30 +184,32 @@ const Wrap: FC = () => {
                 aria-label="wsohm-wut"
                 target="_blank"
               >
-                <Typography>gOHM</Typography> <Icon style={{ marginLeft: "5px" }} name="arrow-up" />
+                <Typography>{TokenSymbol.GOHM}</Typography> <Icon style={{ marginLeft: "5px" }} name="arrow-up" />
               </Link>
             }
           >
             <Grid item style={{ padding: "0 0 2rem 0" }}>
               <MetricCollection>
                 <Metric
-                  label={`sOHM ${t`Price`}`}
+                  label={`${TokenSymbol.SOHM} ${t`Price`}`}
                   metric={formatCurrency(sOhmPrice, 2)}
                   isLoading={sOhmPrice ? false : true}
                 />
                 <Metric
                   label={t`Current Index`}
-                  metric={trim(currentIndex, 1)}
+                  metric={`${trim(currentIndex, 2)} ${TokenSymbol.OHM}`}
                   isLoading={currentIndex ? false : true}
+                  tooltip={String(currentIndex)}
                 />
                 <Metric
-                  label={`gOHM ${t`Price`}`}
+                  label={`${TokenSymbol.GOHM} ${t`Price`}`}
                   metric={formatCurrency(gOhmPrice, 2)}
                   isLoading={gOhmPrice ? false : true}
-                  tooltip={`gOHM = sOHM * index\n\nThe price of gOHM is equal to the price of sOHM multiplied by the current index`}
+                  tooltip={`${TokenSymbol.GOHM} = ${TokenSymbol.SOHM} * index\n\nThe price of ${TokenSymbol.GOHM} is equal to the price of ${TokenSymbol.SOHM} multiplied by the current index`}
                 />
               </MetricCollection>
             </Grid>
+
             <div className="staking-area">
               {!address ? (
                 <div className="stake-wallet-notification">
@@ -240,8 +245,8 @@ const Wrap: FC = () => {
                             onChange={changeAsset}
                             disableUnderline
                           >
-                            <MenuItem value={"sOHM"}>sOHM</MenuItem>
-                            <MenuItem value={"gOHM"}>gOHM</MenuItem>
+                            <MenuItem value={TokenSymbol.SOHM}>{TokenSymbol.SOHM}</MenuItem>
+                            <MenuItem value={TokenSymbol.GOHM}>{TokenSymbol.GOHM}</MenuItem>
                           </Select>
                         </FormControl>
 
@@ -265,8 +270,8 @@ const Wrap: FC = () => {
                             onChange={changeAsset}
                             disableUnderline
                           >
-                            <MenuItem value={"gOHM"}>gOHM</MenuItem>
-                            <MenuItem value={"sOHM"}>sOHM</MenuItem>
+                            <MenuItem value={TokenSymbol.GOHM}>{TokenSymbol.GOHM}</MenuItem>
+                            <MenuItem value={TokenSymbol.SOHM}>{TokenSymbol.SOHM}</MenuItem>
                           </Select>
                         </FormControl>
                       </>
@@ -281,28 +286,36 @@ const Wrap: FC = () => {
                   <div className={`stake-user-data`}>
                     <>
                       <DataRow
-                        title={t`sOHM Balance`}
-                        balance={`${trim(+sohmBalance, 4)} sOHM`}
+                        title={`${TokenSymbol.SOHM} Balance`}
+                        balance={`${trim(+sohmBalance, 4)} ${TokenSymbol.SOHM}`}
                         isLoading={isAppLoading}
                       />
                       <DataRow
-                        title={t`gOHM Balance`}
-                        balance={`${trim(+gohmBalance, 4)} gOHM`}
+                        title={`${TokenSymbol.GOHM} Balance`}
+                        balance={`${trim(+gohmBalance, 4)} ${TokenSymbol.GOHM}`}
                         isLoading={isAppLoading}
                       />
                       <Divider />
                       <Box width="100%" p={1} sx={{ textAlign: "center" }}>
                         <Typography variant="body1" style={{ margin: "15px 0 10px 0" }}>
-                          Got wsOHM on Avalanche or Arbitrum? Click below to switch networks and migrate to gOHM (no
-                          bridge required!)
+                          Got wsOHM on Avalanche or Arbitrum? Click below to switch networks and migrate to{" "}
+                          {TokenSymbol.GOHM} (no bridge required!)
                         </Typography>
-                        <Button onClick={handleSwitchChain(43114)} variant="outlined" style={{ margin: "0.3rem" }}>
+                        <Button
+                          onClick={handleSwitchChain(NetworkId.AVALANCHE)}
+                          variant="outlined"
+                          style={{ margin: "0.3rem" }}
+                        >
                           <img height="28px" width="28px" src={String(avax.image)} alt={avax.imageAltText} />
                           <Typography variant="h6" style={{ marginLeft: "8px" }}>
                             {avax.chainName}
                           </Typography>
                         </Button>
-                        <Button onClick={handleSwitchChain(42161)} variant="outlined" style={{ margin: "0.3rem" }}>
+                        <Button
+                          onClick={handleSwitchChain(NetworkId.ARBITRUM)}
+                          variant="outlined"
+                          style={{ margin: "0.3rem" }}
+                        >
                           <img height="28px" width="28px" src={String(arbitrum.image)} alt={arbitrum.imageAltText} />
                           <Typography variant="h6" style={{ marginLeft: "8px" }}>
                             {arbitrum.chainName}

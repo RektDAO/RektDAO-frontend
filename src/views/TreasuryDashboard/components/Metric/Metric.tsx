@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { Metric } from "@olympusdao/component-library";
+import { TokenSymbol } from "src/constants";
 import { STAKING_CONTRACT_DECIMALS } from "src/constants/decimals";
 import { formatCurrency, formatNumber, parseBigNumber } from "src/helpers";
 import { useCurrentIndex } from "src/hooks/useCurrentIndex";
@@ -36,7 +37,7 @@ export const OHMPrice: React.FC<AbstractedMetricProps> = props => {
 
   const _props: MetricProps = {
     ...props,
-    label: t`OHM Price`,
+    label: `${TokenSymbol.OHM} Price`,
   };
 
   if (ohmPrice) _props.metric = formatCurrency(ohmPrice, 2);
@@ -67,11 +68,11 @@ export const BackingPerOHM: React.FC<AbstractedMetricProps> = props => {
 
   const _props: MetricProps = {
     ...props,
-    label: t`Backing per OHM` + "\n\n" + t`(total / liquid)`,
+    label: `Backing per ${TokenSymbol.OHM}` + "\n\n" + t`(total / liquid)`,
     tooltip:
-      t`Total Treasury MV backing is the total USD budget the Treasury has per OHM to spend on all market operations (LP, swaps, revenue generation, bonds and inverse bonds, etc).` +
+      `Total Treasury MV backing is the total USD budget the Treasury has per ${TokenSymbol.OHM} to spend on all market operations (LP, swaps, revenue generation, bonds and inverse bonds, etc).` +
       "\n\n" +
-      t`Liquid Treasury Backing does not include LP OHM, locked assets, or reserves used for RFV backing. It represents the budget the Treasury has for specific market operations which cannot use OHM (inverse bonds, some liquidity provision, OHM incentives, etc)
+      `Liquid Treasury Backing does not include LP ${TokenSymbol.OHM}, locked assets, or reserves used for RFV backing. It represents the budget the Treasury has for specific market operations which cannot use ${TokenSymbol.OHM} (inverse bonds, some liquidity provision, ${TokenSymbol.OHM} incentives, etc)
     `,
   };
 
@@ -91,10 +92,11 @@ export const CurrentIndex: React.FC<AbstractedMetricProps> = props => {
   const _props: MetricProps = {
     ...props,
     label: t`Current Index`,
-    tooltip: t`The current index tracks the amount of sOHM accumulated since the beginning of staking. Basically, how much sOHM one would have if they staked and held 1 OHM from launch.`,
+    tooltip: `The current index tracks the amount of ${TokenSymbol.SOHM} accumulated since the beginning of staking. Basically, how much ${TokenSymbol.SOHM} one would have if they staked and held 1 ${TokenSymbol.OHM} from launch.`,
   };
 
-  if (currentIndex) _props.metric = `${parseBigNumber(currentIndex, STAKING_CONTRACT_DECIMALS).toFixed(2)} sOHM`;
+  if (currentIndex)
+    _props.metric = `${parseBigNumber(currentIndex, STAKING_CONTRACT_DECIMALS).toFixed(2)} ${TokenSymbol.SOHM}`;
   else _props.isLoading = true;
 
   if (currentIndex) {
@@ -109,11 +111,11 @@ export const GOHMPrice: React.FC<AbstractedMetricProps> = props => {
 
   const _props: MetricProps = {
     ...props,
-    label: t`gOHM Price`,
+    label: `${TokenSymbol.GOHM} Price`,
     tooltip:
-      t`gOHM = sOHM * index` +
+      `${TokenSymbol.GOHM} = ${TokenSymbol.SOHM} * index` +
       "\n\n" +
-      t`The price of gOHM is equal to the price of OHM multiplied by the current index`,
+      `The price of ${TokenSymbol.GOHM} is equal to the price of ${TokenSymbol.OHM} multiplied by the current index`,
   };
 
   if (gOhmPrice) _props.metric = formatCurrency(gOhmPrice, 2);

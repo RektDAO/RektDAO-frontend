@@ -3,6 +3,7 @@ import { t } from "@lingui/macro";
 import { ContractReceipt } from "ethers";
 import { useMutation, useQueryClient } from "react-query";
 import { useDispatch } from "react-redux";
+import { TokenSymbol } from "src/constants";
 import { GOHM_ADDRESSES, OHM_ADDRESSES, SOHM_ADDRESSES, STAKING_ADDRESSES } from "src/constants/addresses";
 import { useWeb3Context } from "src/hooks";
 import { balanceQueryKey, useBalance } from "src/hooks/useBalance";
@@ -10,7 +11,7 @@ import { useDynamicStakingContract } from "src/hooks/useContract";
 import { useTestableNetworks } from "src/hooks/useTestableNetworks";
 import { error as createErrorToast, info as createInfoToast } from "src/slices/MessagesSlice";
 
-export const useStakeToken = (toToken: "sOHM" | "gOHM") => {
+export const useStakeToken = (toToken: TokenSymbol.SOHM | TokenSymbol.GOHM) => {
   const dispatch = useDispatch();
   const client = useQueryClient();
   const networks = useTestableNetworks();
@@ -36,7 +37,7 @@ export const useStakeToken = (toToken: "sOHM" | "gOHM") => {
 
       if (!address) throw new Error(t`Please refresh your page and try again`);
 
-      const shouldRebase = toToken === "sOHM";
+      const shouldRebase = toToken === TokenSymbol.SOHM;
 
       const transaction = await contract.stake(address, parsedAmount, shouldRebase, true);
       return transaction.wait();
@@ -48,7 +49,7 @@ export const useStakeToken = (toToken: "sOHM" | "gOHM") => {
       onSuccess: async () => {
         const keysToRefetch = [
           balanceQueryKey(address, OHM_ADDRESSES, networkId),
-          balanceQueryKey(address, toToken === "sOHM" ? SOHM_ADDRESSES : GOHM_ADDRESSES, networkId),
+          balanceQueryKey(address, toToken === TokenSymbol.SOHM ? SOHM_ADDRESSES : GOHM_ADDRESSES, networkId),
         ];
 
         const promises = keysToRefetch.map(key => client.refetchQueries(key, { active: true }));

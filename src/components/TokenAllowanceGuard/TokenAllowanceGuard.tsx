@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 import { Box, Grid, makeStyles, Theme, Typography } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { PrimaryButton } from "@olympusdao/component-library";
+import { APP_NAME, TokenSymbol, TokenSymbolVal } from "src/constants";
 import { GOHM_ADDRESSES, OHM_ADDRESSES, SOHM_ADDRESSES, STAKING_ADDRESSES } from "src/constants/addresses";
 import { useContractAllowance } from "src/hooks/useContractAllowance";
 
@@ -37,10 +38,15 @@ const useStyles = makeStyles<Theme>(theme => ({
   },
 }));
 
-export const TokenAllowanceGuard: React.FC<{ token: "OHM" | "sOHM" | "gOHM" }> = props => {
+export const TokenAllowanceGuard: React.FC<{ token: TokenSymbolVal }> = props => {
   const classes = useStyles();
 
-  const addresses = props.token === "OHM" ? OHM_ADDRESSES : props.token === "sOHM" ? SOHM_ADDRESSES : GOHM_ADDRESSES;
+  const addresses =
+    props.token === TokenSymbol.OHM
+      ? OHM_ADDRESSES
+      : props.token === TokenSymbol.SOHM
+      ? SOHM_ADDRESSES
+      : GOHM_ADDRESSES;
 
   const approveMutation = useApproveToken(addresses, STAKING_ADDRESSES);
   const { data: allowance } = useContractAllowance(addresses, STAKING_ADDRESSES);
@@ -58,18 +64,19 @@ export const TokenAllowanceGuard: React.FC<{ token: "OHM" | "sOHM" | "gOHM" }> =
         <Grid item xs={12} sm={8} className={classes.gridItem}>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Typography variant="body1" className="stake-note" color="textSecondary">
-              {props.token === "OHM" ? (
+              {props.token === TokenSymbol.OHM ? (
                 <>
-                  <Trans>First time staking</Trans> <b>OHM</b>?
+                  <Trans>First time staking</Trans> <b>{TokenSymbol.OHM}</b>?
                   <br />
-                  <Trans>Please approve Olympus Dao to use your</Trans> <b>OHM</b> <Trans>for staking</Trans>.
+                  <Trans>Please approve {APP_NAME} to use your</Trans> <b>{TokenSymbol.OHM}</b>{" "}
+                  <Trans>for staking</Trans>.
                 </>
               ) : (
                 <>
                   <Trans>First time unstaking</Trans> <b>{props.token}</b>?
                   <br />
-                  <Trans>Please approve Olympus Dao to use your</Trans> <b>{props.token}</b>{" "}
-                  <Trans>for unstaking</Trans>.
+                  <Trans>Please approve {APP_NAME} to use your</Trans> <b>{props.token}</b> <Trans>for unstaking</Trans>
+                  .
                 </>
               )}
             </Typography>

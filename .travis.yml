@@ -15,7 +15,7 @@ script:
     fi
 
 env:
-  - CI=false REACT_APP_NAME_OVERRIDDEN="RektDAO" REACT_APP_URL_ROOT="https://rektdao.finance" REACT_APP_URL_APP_OVERRIDDEN="https://app.rektdao.finance" REACT_APP_SOCIAL_GITHUB="RektDAO/RektDAO-frontend" REACT_APP_SOCIAL_TWITTER="RektDAO" REACT_APP_SOCIAL_MEDIUM="rektdao" REACT_APP_SOCIAL_DISCORD="mW4QqkmMfv"
+  - CI=false REACT_APP_URL_ROOT="rektdao.finance" REACT_APP_SOCIAL_GITHUB="RektDAO" REACT_APP_SOCIAL_TWITTER="RektDAO" REACT_APP_SOCIAL_MEDIUM="rektdao" REACT_APP_SOCIAL_DISCORD="mW4QqkmMfv"
 
 deploy:
   - provider: pages

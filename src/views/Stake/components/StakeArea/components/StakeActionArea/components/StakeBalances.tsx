@@ -3,7 +3,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from "@material-ui/core
 import { ExpandMore } from "@material-ui/icons";
 import { DataRow } from "@olympusdao/component-library";
 import { BigNumber, BigNumberish } from "ethers";
-import { NetworkId } from "src/constants";
+import { NetworkId, TokenSymbol } from "src/constants";
 import { convertGohmToOhm, formatNumber, nonNullable, parseBigNumber } from "src/helpers";
 import {
   useFuseBalance,
@@ -86,7 +86,7 @@ export const StakeBalances = () => {
         id="user-balance"
         title={t`Unstaked Balance`}
         isLoading={!ohmBalancesLoaded}
-        balance={`${formatBalance(totalOhmBalance)} OHM`}
+        balance={`${formatBalance(totalOhmBalance)} ${TokenSymbol.OHM}`}
       />
 
       <Accordion className="stake-accordion" square defaultExpanded>
@@ -95,7 +95,7 @@ export const StakeBalances = () => {
             id="user-staked-balance"
             isLoading={!allBalancesLoaded}
             title={t`Total Staked Balance`}
-            balance={`${totalStakedBalance} sOHM`}
+            balance={`${totalStakedBalance} ${TokenSymbol.SOHM}`}
           />
         </AccordionSummary>
 
@@ -103,73 +103,73 @@ export const StakeBalances = () => {
           {hasVisibleBalance(v1sohmBalances[networks.MAINNET]?.data) && (
             <DataRow
               indented
-              title={t`sOHM (Mainnet)`}
+              title={`${TokenSymbol.SOHM} (Mainnet)`}
               id="user-staked-balance"
               isLoading={!sohmBalances[networks.MAINNET]?.data}
-              balance={`${formatBalance(sohmBalances[networks.MAINNET]?.data)} sOHM`}
+              balance={`${formatBalance(sohmBalances[networks.MAINNET]?.data)} ${TokenSymbol.SOHM}`}
             />
           )}
 
           {hasVisibleBalance(gohmBalances[networks.ARBITRUM]?.data, 18) && (
             <DataRow
               indented
-              title={t`gOHM (Mainnet)`}
+              title={`${TokenSymbol.GOHM} (Mainnet)`}
               isLoading={!gohmBalances[networks.MAINNET]?.data}
-              balance={`${formatBalance(gohmBalances[networks.MAINNET]?.data, 18)} gOHM`}
+              balance={`${formatBalance(gohmBalances[networks.MAINNET]?.data, 18)} ${TokenSymbol.GOHM}`}
             />
           )}
 
           {hasVisibleBalance(gohmBalances[networks.ARBITRUM]?.data, 18) && (
             <DataRow
               indented
-              title={t`gOHM (Arbitrum)`}
+              title={`${TokenSymbol.GOHM} (Arbitrum)`}
               isLoading={!gohmBalances[networks.ARBITRUM]?.data}
-              balance={`${formatBalance(gohmBalances[networks.ARBITRUM]?.data, 18)} gOHM`}
+              balance={`${formatBalance(gohmBalances[networks.ARBITRUM]?.data, 18)} ${TokenSymbol.GOHM}`}
             />
           )}
 
           {hasVisibleBalance(gohmBalances[networks.AVALANCHE]?.data, 18) && (
             <DataRow
               indented
-              title={t`gOHM (Avalanche)`}
+              title={`${TokenSymbol.GOHM} (Avalanche)`}
               isLoading={!gohmBalances[networks.AVALANCHE]?.data}
-              balance={`${formatBalance(gohmBalances[networks.AVALANCHE]?.data, 18)} gOHM`}
+              balance={`${formatBalance(gohmBalances[networks.AVALANCHE]?.data, 18)} ${TokenSymbol.GOHM}`}
             />
           )}
 
           {hasVisibleBalance(gohmBalances[networks.POLYGON]?.data, 18) && (
             <DataRow
               indented
-              title={t`gOHM (Polygon)`}
+              title={`${TokenSymbol.GOHM} (Polygon)`}
               isLoading={!gohmBalances[networks.POLYGON]?.data}
-              balance={`${formatBalance(gohmBalances[networks.POLYGON]?.data, 18)} gOHM`}
+              balance={`${formatBalance(gohmBalances[networks.POLYGON]?.data, 18)} ${TokenSymbol.GOHM}`}
             />
           )}
 
           {hasVisibleBalance(gohmBalances[networks.FANTOM]?.data, 18) && (
             <DataRow
               indented
-              title={t`gOHM (Fantom)`}
+              title={`${TokenSymbol.GOHM} (Fantom)`}
               isLoading={!gohmBalances[networks.FANTOM]?.data}
-              balance={`${formatBalance(gohmBalances[networks.FANTOM]?.data, 18)} gOHM`}
+              balance={`${formatBalance(gohmBalances[networks.FANTOM]?.data, 18)} ${TokenSymbol.GOHM}`}
             />
           )}
 
           {hasVisibleBalance(gohmTokemakBalances[NetworkId.MAINNET]?.data, 18) && (
             <DataRow
               indented
-              title={t`gOHM (Tokemak)`}
+              title={`${TokenSymbol.GOHM} (Tokemak)`}
               isLoading={!gohmTokemakBalances[NetworkId.MAINNET]?.data}
-              balance={`${formatBalance(gohmTokemakBalances[NetworkId.MAINNET]?.data, 18)} gOHM`}
+              balance={`${formatBalance(gohmTokemakBalances[NetworkId.MAINNET]?.data, 18)} ${TokenSymbol.GOHM}`}
             />
           )}
 
           {hasVisibleBalance(gohmFuseBalances[NetworkId.MAINNET]?.data, 18) && (
             <DataRow
               indented
-              title={t`gOHM (Fuse)`}
+              title={`${TokenSymbol.GOHM} (Fuse)`}
               isLoading={!gohmFuseBalances[NetworkId.MAINNET]?.data}
-              balance={`${formatBalance(gohmFuseBalances[NetworkId.MAINNET]?.data, 18)} gOHM`}
+              balance={`${formatBalance(gohmFuseBalances[NetworkId.MAINNET]?.data, 18)} ${TokenSymbol.GOHM}`}
             />
           )}
 

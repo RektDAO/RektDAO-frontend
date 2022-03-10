@@ -22,6 +22,7 @@ import {
   NetworkId,
   NetworkIdVal,
   TOKEN_DECIMALS_TENS,
+  TokenSymbol,
 } from "../constants";
 import { PairContract, RedeemHelper } from "../typechain";
 import { ohm_dai, ohm_daiOld, ohm_weth } from "./AllBonds";
@@ -169,7 +170,7 @@ export function shortenString(str: string, length: number) {
 }
 
 export function formatCurrency(c: number, precision = 0, currency = "USD") {
-  if (currency === "OHM") return `${trim(c, precision)} Ω`;
+  if (currency === TokenSymbol.OHM) return `${trim(c, precision)} Ω`;
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,

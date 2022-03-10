@@ -209,10 +209,10 @@ export const executeZap = createAsyncThunk(
 );
 
 const zapNetworkAvailable = (networkID: NetworkId, dispatch: ThunkDispatch<unknown, unknown, AnyAction>) => {
-  if (Number(networkID) === 1) {
+  if (Number(networkID) === NetworkId.MAINNET) {
     return true;
   } else {
-    dispatch(info("Zaps are only available on Mainnet"));
+    dispatch(info("Zaps are not available on this network yet"));
     return false;
   }
 };

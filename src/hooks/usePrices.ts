@@ -15,13 +15,14 @@ export const ohmPriceQueryKey = () => ["useOhmPrice"];
  * Returns the market price of OHM.
  */
 export const useOhmPrice = () => {
-  const { networkId } = useWeb3Context();
-  const address = ohm_dai.getAddressForReserve(networkId) || addresses[networkId].DAI_ADDRESS;
-  assert(address, "OHM-DAI contract should exist for networkId: " + networkId);
+  const { networkId, networkIdExists } = useWeb3Context();
+  const address = ohm_dai.getAddressForReserve(networkId) || addresses[networkId]?.DAI_ADDRESS;
+  if (networkIdExists) assert(address, "OHM-DAI contract should exist for networkId: " + networkId);
 
   const reserveContract = useStaticPairContract(address, networkId);
 
   return useQuery<number, Error>(ohmPriceQueryKey(), async () => {
+    if (!networkIdExists) return 0;
     try {
       const [ohm, dai] = await reserveContract.getReserves();
       // const [ohm, dai] = reserveContract ? await reserveContract.getReserves() : [toBN(69), toBN(420)];
