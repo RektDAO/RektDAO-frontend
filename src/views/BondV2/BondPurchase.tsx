@@ -135,7 +135,7 @@ function BondPurchase({
                     <em>
                       <Typography variant="body1" align="center" color="textSecondary">
                         <Trans>First time bonding</Trans> <b>{bond.displayName}</b>? <br />{" "}
-                        <Trans>Please approve {APP_NAME} to use your</Trans> <b>{bond.displayName}</b>{" "}
+                        <Trans>Please approve</Trans> {APP_NAME} <Trans>to use your</Trans> <b>{bond.displayName}</b>{" "}
                         <Trans>for bonding</Trans>.
                       </Typography>
                     </em>

@@ -58,7 +58,7 @@ export async function getTokenMetrics(
     secondsToEpoch: 0,
   } as IAppData;
 
-  if (!providerInitialized || !provider) {
+  if (/*!providerInitialized ||*/ !provider) {
     return appDetailsEmpty;
   }
 
@@ -164,7 +164,7 @@ export const loadAppDetails = createAsyncThunk(
     //   provider = NodeHelper.getAnynetStaticProvider(networkID);
     // }
 
-    if (!providerInitialized || !provider) {
+    if (/*!providerInitialized ||*/ !provider) {
       // console.error("failed to connect to provider, please connect your wallet");
       return appDetailsEmpty;
     }
@@ -208,7 +208,12 @@ export const loadAppDetails = createAsyncThunk(
     // const currentBlock = parseFloat(graphData.data._meta.block.number);
 
     console.log("loadAppDetails: getTokenMetrics-BEFORE: networkID", networkID);
-    const tokenMetrics = (await getTokenMetrics(networkID, provider, providerInitialized, dispatch)) as IAppData;
+    const tokenMetrics = (await getTokenMetrics(
+      networkID,
+      provider,
+      Boolean(providerInitialized),
+      dispatch,
+    )) as IAppData;
     console.log("loadAppDetails: getTokenMetrics-AFTER: networkID", networkID);
 
     return tokenMetrics;
