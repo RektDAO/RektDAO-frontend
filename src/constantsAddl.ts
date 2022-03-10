@@ -6,6 +6,26 @@ import { NetworkId } from "./networkId";
 
 export * from "./networkId";
 
+export const APP_NAME = EnvHelper.appName;
+export const APP_URL = EnvHelper.appUrl;
+export const APP_URL_ROOT = EnvHelper.appUrlRoot;
+
+export enum TokenSymbol {
+  OHM = "REKT",
+  SOHM = "sREKT",
+  GOHM = "gREKT",
+}
+export type TokenSymbolKey = keyof typeof TokenSymbol;
+export type TokenSymbolVal = typeof TokenSymbol[TokenSymbolKey];
+
+export enum TokenName {
+  OHM = "Rekt",
+  SOHM = "Staked REKT",
+  GOHM = "Governance REKT",
+}
+export type TokenNameKey = keyof typeof TokenName;
+export type TokenNameVal = typeof TokenName[TokenNameKey];
+
 export const TOKEN_DECIMALS_TENS = 10 ** SOHM_CONTRACT_DECIMALS;
 export const SECONDS_PER_DAY = 86400; // 60 * 60 * 24
 export const EPOCH_HOURS = 4; // TODO: make sure to deploy contract with this
@@ -15,6 +35,7 @@ export const BLANK_ADDRESS = "";
 export const ZERO_BALANCE = {
   [NetworkId.LOCAL]: { data: ethers.constants.Zero },
 };
+export const IS_DASHBOARDS_VISIBLE = false;
 
 // blocks per day:
 export const BLOCKS_PER_DAY_MAP: { [key: number]: number } = {

@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
 import { DataRow } from "@olympusdao/component-library";
 import { BigNumber } from "ethers";
+import { TokenSymbol } from "src/constants";
 import { convertGohmToOhm, formatNumber, nonNullable, parseBigNumber } from "src/helpers";
 import { useWeb3Context } from "src/hooks";
 import { useGohmBalance, useSohmBalance } from "src/hooks/useBalance";
@@ -55,7 +56,7 @@ export const StakeNextRebaseAmount = () => {
     const totalCombinedBalance = parseBigNumber(gohmBalanceAsSohm, 18) + parseBigNumber(totalSohmBalance);
 
     const nextRewardAmount = rebaseRate * totalCombinedBalance;
-    props.balance = `${formatNumber(nextRewardAmount, 4)} sOHM`;
+    props.balance = `${formatNumber(nextRewardAmount, 4)} ${TokenSymbol.SOHM}`;
   } else props.isLoading = true;
 
   return <DataRow {...props} />;

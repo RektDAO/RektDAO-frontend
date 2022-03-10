@@ -2,7 +2,7 @@ import { OHMTokenStackProps } from "@olympusdao/component-library";
 import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit";
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { EnvHelper } from "src/helpers/Environment";
-// import { NodeHelper } from "src/helpers/NodeHelper";
+import { NodeHelper } from "src/helpers/NodeHelper";
 import { RootState } from "src/store";
 import { FiatDAOContract, FuseProxy, IERC20, IERC20__factory /*, OpenSOHM , WsOHM */ } from "src/typechain";
 import { GOHM__factory } from "src/typechain/factories/GOHM__factory";
@@ -66,29 +66,29 @@ interface IUserRecipientInfo {
 export const getBalances = createAsyncThunk(
   "account/getBalances",
   async ({ address, networkID, provider }: IBaseAddressAsyncThunk): Promise<IUserBalances> => {
-    let gOhmBalance = BigNumber.from("0");
-    let gOhmBalAsSohmBal = BigNumber.from("0");
-    const gOhmOnArbitrum = BigNumber.from("0");
-    const gOhmOnArbAsSohm = BigNumber.from("0");
-    const gOhmOnAvax = BigNumber.from("0");
-    const gOhmOnAvaxAsSohm = BigNumber.from("0");
-    const gOhmOnPolygon = BigNumber.from("0");
-    const gOhmOnPolygonAsSohm = BigNumber.from("0");
-    const gOhmOnFantom = BigNumber.from("0");
-    const gOhmOnFantomAsSohm = BigNumber.from("0");
-    const gOhmOnTokemak = BigNumber.from("0");
-    const gOhmOnTokemakAsSohm = BigNumber.from("0");
-    const ohmBalance = BigNumber.from("0");
-    const sohmBalance = BigNumber.from("0");
-    const wsohmBalance = BigNumber.from("0");
-    let mockSohmBalance = BigNumber.from("0");
-    let ohmV2Balance = BigNumber.from("0");
-    let sohmV2Balance = BigNumber.from("0");
-    let poolBalance = BigNumber.from("0");
-    let fsohmBalance = BigNumber.from(0);
-    let fgohmBalance = BigNumber.from(0);
-    let fgOHMAsfsOHMBalance = BigNumber.from(0);
-    let fiatDaowsohmBalance = BigNumber.from("0");
+    let gOhmBalance = ethers.constants.Zero;
+    let gOhmBalAsSohmBal = ethers.constants.Zero;
+    const gOhmOnArbitrum = ethers.constants.Zero;
+    const gOhmOnArbAsSohm = ethers.constants.Zero;
+    let gOhmOnAvax = ethers.constants.Zero;
+    let gOhmOnAvaxAsSohm = ethers.constants.Zero;
+    const gOhmOnPolygon = ethers.constants.Zero;
+    const gOhmOnPolygonAsSohm = ethers.constants.Zero;
+    const gOhmOnFantom = ethers.constants.Zero;
+    const gOhmOnFantomAsSohm = ethers.constants.Zero;
+    const gOhmOnTokemak = ethers.constants.Zero;
+    const gOhmOnTokemakAsSohm = ethers.constants.Zero;
+    const ohmBalance = ethers.constants.Zero;
+    const sohmBalance = ethers.constants.Zero;
+    const wsohmBalance = ethers.constants.Zero;
+    let mockSohmBalance = ethers.constants.Zero;
+    let ohmV2Balance = ethers.constants.Zero;
+    let sohmV2Balance = ethers.constants.Zero;
+    let poolBalance = ethers.constants.Zero;
+    let fsohmBalance = ethers.constants.Zero;
+    let fgohmBalance = ethers.constants.Zero;
+    let fgOHMAsfsOHMBalance = ethers.constants.Zero;
+    let fiatDaowsohmBalance = ethers.constants.Zero;
 
     const gOhmContract = GOHM__factory.connect(addresses[networkID].GOHM_ADDRESS, provider);
     try {
@@ -105,14 +105,14 @@ export const getBalances = createAsyncThunk(
     // } catch (e) {
     //   handleContractError(e, `${NetworkId.ARBITRUM}`);
     // }
-    // try {
-    //   const avaxProvider = NodeHelper.getAnynetStaticProvider(NetworkId.AVALANCHE);
-    //   const gOhmAvaxContract = GOHM__factory.connect(addresses[NetworkId.AVALANCHE].GOHM_ADDRESS, avaxProvider);
-    //   gOhmOnAvax = await gOhmAvaxContract.balanceOf(address);
-    //   gOhmOnAvaxAsSohm = await gOhmContract.balanceFrom(gOhmOnAvax.toString());
-    // } catch (e) {
-    //   handleContractError(e, `${NetworkId.AVALANCHE}`);
-    // }
+    try {
+      const avaxProvider = NodeHelper.getAnynetStaticProvider(NetworkId.AVALANCHE);
+      const gOhmAvaxContract = GOHM__factory.connect(addresses[NetworkId.AVALANCHE].GOHM_ADDRESS, avaxProvider);
+      gOhmOnAvax = await gOhmAvaxContract.balanceOf(address);
+      gOhmOnAvaxAsSohm = await gOhmContract.balanceFrom(gOhmOnAvax.toString());
+    } catch (e) {
+      handleContractError(e, `${NetworkId.AVALANCHE}`);
+    }
     // try {
     //   const polygonProvider = NodeHelper.getAnynetStaticProvider(NetworkId.POLYGON);
     //   const gOhmPolygonContract = GOHM__factory.connect(addresses[NetworkId.POLYGON].GOHM_ADDRESS, polygonProvider);
@@ -301,7 +301,9 @@ export const getDonationBalances = createAsyncThunk(
 
           // NOTE: Bad fix, but since no rebases on testnet this would throw an error otherwise
           const yieldSent: BigNumber =
-            networkID === 1 ? await givingContract.donatedTo(address, recipient) : BigNumber.from("0");
+            networkID === NetworkId.MAINNET
+              ? await givingContract.donatedTo(address, recipient)
+              : ethers.constants.Zero;
           const formattedYieldSent = ethers.utils.formatUnits(yieldSent, "gwei");
 
           donationInfo.push({
@@ -356,7 +358,7 @@ export const getMockDonationBalances = createAsyncThunk(
         // NOTE: The BigNumber here is from ethers, and is a different implementation of BigNumber used in the rest of the frontend. For that reason, we convert to string in the interim.
         const allDeposits: [string[], BigNumber[]] = await givingContract.getAllDeposits(address);
         for (let i = 0; i < allDeposits[0].length; i++) {
-          if (allDeposits[1][i] !== BigNumber.from(0)) {
+          if (allDeposits[1][i] !== ethers.constants.Zero) {
             const depositAmount = ethers.utils.formatUnits(allDeposits[1][i], "gwei");
             const recipient = allDeposits[0][i];
             const firstDonationDate: string = await GetDonationDate({
@@ -429,10 +431,10 @@ interface IUserAccountDetails {
 export const getMigrationAllowances = createAsyncThunk(
   "account/getMigrationAllowances",
   async ({ networkID, provider, address }: IBaseAddressAsyncThunk) => {
-    let ohmAllowance = BigNumber.from(0);
-    let sOhmAllowance = BigNumber.from(0);
-    let wsOhmAllowance = BigNumber.from(0);
-    let gOhmAllowance = BigNumber.from(0);
+    let ohmAllowance = ethers.constants.Zero;
+    let sOhmAllowance = ethers.constants.Zero;
+    let wsOhmAllowance = ethers.constants.Zero;
+    let gOhmAllowance = ethers.constants.Zero;
 
     if (addresses[networkID].OHM_ADDRESS) {
       try {
@@ -485,15 +487,15 @@ export const getMigrationAllowances = createAsyncThunk(
 export const loadAccountDetails = createAsyncThunk(
   "account/loadAccountDetails",
   async ({ networkID, provider, address }: IBaseAddressAsyncThunk, { dispatch }) => {
-    const stakeAllowance = BigNumber.from("0");
-    let stakeAllowanceV2 = BigNumber.from("0");
-    let unstakeAllowanceV2 = BigNumber.from("0");
-    const unstakeAllowance = BigNumber.from("0");
-    const wrapAllowance = BigNumber.from("0");
-    let gOhmUnwrapAllowance = BigNumber.from("0");
-    // let poolAllowance = BigNumber.from("0");
-    const ohmToGohmAllowance = BigNumber.from("0");
-    const wsOhmMigrateAllowance = BigNumber.from("0");
+    const stakeAllowance = ethers.constants.Zero;
+    let stakeAllowanceV2 = ethers.constants.Zero;
+    let unstakeAllowanceV2 = ethers.constants.Zero;
+    const unstakeAllowance = ethers.constants.Zero;
+    const wrapAllowance = ethers.constants.Zero;
+    let gOhmUnwrapAllowance = ethers.constants.Zero;
+    // let poolAllowance = ethers.constants.Zero;
+    const ohmToGohmAllowance = ethers.constants.Zero;
+    const wsOhmMigrateAllowance = ethers.constants.Zero;
 
     try {
       const gOhmContract = GOHM__factory.connect(addresses[networkID].GOHM_ADDRESS, provider);
@@ -508,12 +510,12 @@ export const loadAccountDetails = createAsyncThunk(
       //   provider,
       // ) as IERC20;
       // stakeAllowance = !addresses[networkID].STAKING_HELPER_ADDRESS
-      //   ? BigNumber.from("0")
+      //   ? ethers.constants.Zero
       //   : await ohmContract.allowance(address, addresses[networkID].STAKING_HELPER_ADDRESS);
 
       // const sohmContract = new ethers.Contract(addresses[networkID].SOHM_V2 as string, OpenSOHMAbi, provider) as OpenSOHM;
       // unstakeAllowance = !addresses[networkID].STAKING_ADDRESS
-      //   ? BigNumber.from("0")
+      //   ? ethers.constants.Zero
       //   : await sohmContract.allowance(address, addresses[networkID].STAKING_ADDRESS);
       // poolAllowance = await sohmContract.allowance(address, addresses[networkID].PT_PRIZE_POOL_ADDRESS);
       // wrapAllowance = await sohmContract.allowance(address, addresses[networkID].STAKING_V2);
@@ -594,7 +596,7 @@ export const calculateUserBondDetails = createAsyncThunk(
       const bondMaturationBlock = +bondDetails.vesting + +bondDetails.lastBlock;
       const pendingPayout = await bondContract.pendingPayoutFor(address);
 
-      let balance = BigNumber.from(0);
+      let balance = ethers.constants.Zero;
       const allowance = await reserveContract.allowance(address, bond.getAddressForBond(networkID) || "");
       balance = await reserveContract.balanceOf(address);
       // formatEthers takes BigNumber => String

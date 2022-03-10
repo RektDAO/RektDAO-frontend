@@ -5,7 +5,7 @@ import { RootState } from "src/store";
 
 import { abi as ierc20Abi } from "../abi/IERC20.json";
 import { abi as OpenSOHMAbi } from "../abi/OpenSOHM.json";
-import { addresses, /*DEFAULT_CHAIN_ID,*/ EPOCHS_PER_DAY, NetworkIdVal, TOKEN_DECIMALS_TENS } from "../constants";
+import { addresses, EPOCHS_PER_DAY, NetworkIdVal, TOKEN_DECIMALS_TENS } from "../constants";
 import { getMarketPrice, getTokenPrice, setAll } from "../helpers";
 import { IERC20, OlympusStaking__factory, OlympusStakingv2__factory, OpenSOHM } from "../typechain";
 import { IBaseAsyncThunk } from "./interfaces";
@@ -29,6 +29,7 @@ type IProtocolMetricsNumbers = Record<keyof IProtocolMetrics, number>;
 
 type ProtocolMetricsKeys = Array<keyof IProtocolMetrics>;
 const protocolMetricsKeys: ProtocolMetricsKeys = Object.keys(new ProtocolMetricsClass()) as ProtocolMetricsKeys;
+const protocolMetricsMock = Object.fromEntries(protocolMetricsKeys.map(v => [v, 42069])) as IProtocolMetricsNumbers;
 
 // inspired by: https://github.com/OlympusDAO/olympus-protocol-metrics-subgraph/blob/master/src/utils/ProtocolMetrics.ts
 export async function getTokenMetrics(
@@ -36,9 +37,29 @@ export async function getTokenMetrics(
   provider: ethers.providers.StaticJsonRpcProvider | ethers.providers.JsonRpcProvider,
   providerInitialized: boolean,
   dispatch: ThunkDispatch<unknown, unknown, AnyAction>,
-) {
-  if (!providerInitialized) {
-    return;
+): Promise<IAppData> {
+  const appDetailsEmpty = {
+    currentIndex: ethers.utils.formatUnits(0, "gwei"),
+    currentBlock: 0,
+    fiveDayRate: 0,
+    stakingAPY: 0,
+    stakingTVL: 0,
+    stakingRebase: 0,
+    marketCap: 0,
+    marketPrice: 0,
+    circSupply: 0,
+    totalSupply: 0,
+    circSupplyOhm: 0,
+    circSupplySOhm: 0,
+    totalSupplyOhm: 0,
+    totalSupplySOhm: 0,
+    treasuryBalance: 0,
+    treasuryMarketValue: 0,
+    secondsToEpoch: 0,
+  } as IAppData;
+
+  if (!providerInitialized || !provider) {
+    return appDetailsEmpty;
   }
 
   console.log("getTokenMetrics: networkID", networkID);
@@ -54,7 +75,7 @@ export async function getTokenMetrics(
   } catch (rejectedValueOrSerializedError) {
     // handle error here
     console.error("Returned a null response from dispatch(loadMarketPrice)");
-    return;
+    return appDetailsEmpty;
   }
 
   const ohmMainContract = new ethers.Contract(addresses[networkID].OHM_V2 as string, ierc20Abi, provider) as IERC20;
@@ -128,6 +149,26 @@ export async function getTokenMetrics(
 export const loadAppDetails = createAsyncThunk(
   "app/loadAppDetails",
   async ({ networkID, provider, providerInitialized }: IBaseAsyncThunk, { dispatch }) => {
+    const appDetailsEmpty = {
+      stakingTVL: 0,
+      marketPrice: 0,
+      marketCap: 0,
+      circSupply: 0,
+      totalSupply: 0,
+      treasuryMarketValue: 0,
+      circPct: 0,
+    } as IAppData;
+
+    // if (!addresses[networkID].STAKING_V2) {
+    //   networkID = DEFAULT_CHAIN_ID;
+    //   provider = NodeHelper.getAnynetStaticProvider(networkID);
+    // }
+
+    if (!providerInitialized || !provider) {
+      // console.error("failed to connect to provider, please connect your wallet");
+      return appDetailsEmpty;
+    }
+
     const protocolMetricsQuery = `
       query {
         _meta {
@@ -150,31 +191,12 @@ export const loadAppDetails = createAsyncThunk(
       }
     `;
 
-    // if (!addresses[networkID].STAKING_V2) {
-    //   networkID = DEFAULT_CHAIN_ID;
-    //   provider = NodeHelper.getAnynetStaticProvider(networkID);
-    // }
-
-    if (!provider || !providerInitialized) {
-      console.error("failed to connect to provider, please connect your wallet");
-      return {
-        stakingTVL: 0,
-        marketPrice: 0,
-        marketCap: 0,
-        circSupply: 0,
-        totalSupply: 0,
-        treasuryMarketValue: 0,
-        circPct: 0,
-      } as IAppData;
-    }
-
-    const protocolMetricsMock = Object.fromEntries(protocolMetricsKeys.map(v => [v, 42069])) as IProtocolMetricsNumbers;
     // const graphData = await apollo<{ protocolMetrics: IProtocolMetrics[] }>(protocolMetricsQuery);
     const graphData = protocolMetricsMock;
 
     if (!graphData || graphData == null) {
       console.error("Returned a null response when querying TheGraph");
-      return;
+      return appDetailsEmpty;
     }
     const metrics: IProtocolMetricsNumbers = protocolMetricsMock;
 
@@ -186,10 +208,10 @@ export const loadAppDetails = createAsyncThunk(
     // const currentBlock = parseFloat(graphData.data._meta.block.number);
 
     console.log("loadAppDetails: getTokenMetrics-BEFORE: networkID", networkID);
-    const tokenMetrics = await getTokenMetrics(networkID, provider, providerInitialized, dispatch);
+    const tokenMetrics = (await getTokenMetrics(networkID, provider, providerInitialized, dispatch)) as IAppData;
     console.log("loadAppDetails: getTokenMetrics-AFTER: networkID", networkID);
 
-    return tokenMetrics as IAppData;
+    return tokenMetrics;
   },
 );
 

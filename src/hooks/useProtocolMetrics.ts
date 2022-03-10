@@ -3,6 +3,8 @@ import { useAppDispatch, useWeb3Context } from "src/hooks";
 import apollo from "src/lib/apolloClient";
 import { getTokenMetrics, IAppData } from "src/slices/AppSlice";
 
+import { EPOCHS_PER_DAY } from "../constants";
+
 const query = `
   query ProtcolMetrics {
     protocolMetrics(first: 100, orderBy: timestamp, orderDirection: desc) {
@@ -89,12 +91,12 @@ type ProtocolMetricsNumbers = Record<keyof ProtocolMetrics, number>;
 
 type ProtocolMetricsKeys = Array<keyof ProtocolMetrics>;
 const protocolMetricsKeys: ProtocolMetricsKeys = Object.keys(new ProtocolMetricsClass()) as ProtocolMetricsKeys;
+const protocolMetricsMock = Object.fromEntries(protocolMetricsKeys.map(v => [v, 7777777])) as ProtocolMetricsNumbers;
 
 export const protocolMetricsQueryKey = () => ["useProtocolMetrics"];
 
 export const useProtocolMetrics = <TSelectData = unknown>(select: (data: ProtocolMetricsNumbers[]) => TSelectData) => {
   const { networkId: networkID, provider, providerInitialized } = useWeb3Context();
-  console.log("useProtocolMetrics: provider", provider);
   const dispatch = useAppDispatch();
   return useQuery<ProtocolMetricsNumbers[], Error, TSelectData>(
     protocolMetricsQueryKey(),
@@ -102,6 +104,12 @@ export const useProtocolMetrics = <TSelectData = unknown>(select: (data: Protoco
       console.log("useProtocolMetrics: getTokenMetrics-BEFORE: networkID", networkID);
       const tokenMetrics = (await getTokenMetrics(networkID, provider, providerInitialized, dispatch)) as IAppData;
       console.log("useProtocolMetrics: getTokenMetrics-AFTER: networkID", networkID);
+
+      // if (!providerInitialized || !provider) {
+      //   return [protocolMetricsMock];
+      // }
+      // console.log("useProtocolMetrics: provider", provider);
+
       const marketPrice = Number(tokenMetrics.marketPrice);
       const marketCap = Number(tokenMetrics.marketCap);
       const circSupply = Number(tokenMetrics.circSupply);
@@ -116,11 +124,8 @@ export const useProtocolMetrics = <TSelectData = unknown>(select: (data: Protoco
       const treasuryOhmDaiPOL = 100;
 
       const treasuryRunway = Number.parseFloat(String(treasuryRiskFreeValue / totalSupply));
-      const runwayCurrent = Math.log(treasuryRunway) / Math.log(1 + stakingRebase) / 3;
+      const runwayCurrent = Math.log(treasuryRunway) / Math.log(1 + stakingRebase) / EPOCHS_PER_DAY;
 
-      const protocolMetricsMock = Object.fromEntries(
-        protocolMetricsKeys.map(v => [v, 42069]),
-      ) as ProtocolMetricsNumbers;
       protocolMetricsMock.ohmPrice = marketPrice;
       protocolMetricsMock.marketCap = marketCap;
       protocolMetricsMock.circSupply = circSupply; // circSupply == circSupplyOhm + circSupplySOhm

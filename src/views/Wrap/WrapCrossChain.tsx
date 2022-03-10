@@ -8,6 +8,7 @@ import { DataRow, InputWrapper } from "@olympusdao/component-library";
 import { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import ConnectButton from "src/components/ConnectButton/ConnectButton";
+import { TokenSymbol } from "src/constants";
 import { useAppSelector } from "src/hooks/index";
 import { useWeb3Context } from "src/hooks/web3Context";
 import { isPendingTxn, txnButtonTextMultiType } from "src/slices/PendingTxnsSlice";
@@ -22,7 +23,7 @@ function WrapCrossChain() {
   const { provider, address, networkId, networkName, connect } = useWeb3Context();
   const [quantity, setQuantity] = useState("");
   const assetFrom = "wsOHM";
-  const assetTo = "gOHM";
+  const assetTo = TokenSymbol.GOHM;
 
   const isAppLoading = useAppSelector(state => state.app.loading || state.account.loading);
   const currentIndex =
@@ -95,10 +96,10 @@ function WrapCrossChain() {
 
   const chooseInputArea = () => {
     if (!address || isAppLoading) return <Skeleton width="80%" />;
-    if (!hasCorrectAllowance() && assetTo === "gOHM")
+    if (!hasCorrectAllowance() && assetTo === TokenSymbol.GOHM)
       return (
         <div className="no-input-visible">
-          First time wrapping to <b>gOHM</b>?
+          First time wrapping to <b>{TokenSymbol.GOHM}</b>?
           <br />
           Please approve Olympus to use your <b>{assetFrom}</b> for this transaction.
         </div>
@@ -154,7 +155,7 @@ function WrapCrossChain() {
               aria-label="wsohm-wut"
               target="_blank"
             >
-              <Typography>gOHM</Typography> <Icon name="arrow-up" style={{ marginLeft: "5px" }} />
+              <Typography>{TokenSymbol.GOHM}</Typography> <Icon name="arrow-up" style={{ marginLeft: "5px" }} />
             </Link>
           }
         >
@@ -162,20 +163,21 @@ function WrapCrossChain() {
             <Grid item>
               <MetricCollection>
                 <Metric
-                  label={`sOHM ${t`Price`}`}
+                  label={`${TokenSymbol.SOHM} ${t`Price`}`}
                   metric={formatCurrency(sOhmPrice, 2)}
                   isLoading={sOhmPrice ? false : true}
                 />
                 <Metric
                   label={t`Current Index`}
-                  metric={`${trim(currentIndex, 1)} OHM`}
+                  metric={`${trim(currentIndex, 2)} ${TokenSymbol.OHM}`}
                   isLoading={currentIndex ? false : true}
+                  tooltip={String(currentIndex)}
                 />
                 <Metric
                   label={`${assetTo} Price`}
                   metric={formatCurrency(gOhmPrice, 2)}
                   isLoading={gOhmPrice ? false : true}
-                  tooltip={`${assetTo} = sOHM * index\n\nThe price of ${assetTo} is equal to the price of OHM multiplied by the current index`}
+                  tooltip={`${assetTo} = ${TokenSymbol.SOHM} * index\n\nThe price of ${assetTo} is equal to the price of ${TokenSymbol.OHM} multiplied by the current index`}
                 />
               </MetricCollection>
             </Grid>
@@ -194,7 +196,7 @@ function WrapCrossChain() {
                     <Box style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                       <Box height="32px">
                         <Typography>
-                          Transform <b>wsOHM</b> to <b>gOHM</b>
+                          Transform <b>wsOHM</b> to <b>{TokenSymbol.GOHM}</b>
                         </Typography>
                       </Box>
                     </Box>
@@ -212,8 +214,8 @@ function WrapCrossChain() {
                       isLoading={isAppLoading}
                     />
                     <DataRow
-                      title={`${t`gOHM Balance`} (${networkName})`}
-                      balance={`${trim(gohmBalance, 4)} gOHM`}
+                      title={`${`${TokenSymbol.GOHM} Balance`} (${networkName})`}
+                      balance={`${trim(gohmBalance, 4)} ${TokenSymbol.GOHM}`}
                       isLoading={isAppLoading}
                     />
                     <Divider />

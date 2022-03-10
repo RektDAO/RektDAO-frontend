@@ -15,7 +15,7 @@ import { Skeleton } from "@material-ui/lab";
 import { Icon, OHMTokenProps, OHMTokenStackProps, Token, TokenStack } from "@olympusdao/component-library";
 import { ReactElement, useState } from "react";
 import { ReactComponent as ArrowUpIcon } from "src/assets/icons/arrow-up.svg";
-import { addresses } from "src/constants";
+import { addresses, IS_DASHBOARDS_VISIBLE, TokenSymbol } from "src/constants";
 import { formatCurrency } from "src/helpers";
 import { dai, frax } from "src/helpers/AllBonds";
 import { useAppSelector, useWeb3Context } from "src/hooks";
@@ -121,7 +121,7 @@ const WalletTotalValue = () => {
   const tokens = useWallet(userAddress, networkId, providerInitialized);
   const isLoading = useAppSelector(s => s.account.loading || s.app.loadingMarketPrice || s.app.loading);
   const marketPrice = useAppSelector(s => s.app.marketPrice || 0);
-  const [currency, setCurrency] = useState<"USD" | "OHM">("USD");
+  const [currency, setCurrency] = useState<"USD" | TokenSymbol.OHM>("USD");
 
   const walletTotalValueUSD = Object.values(tokens).reduce(
     (totalValue, token) => totalValue + parseFloat(token.totalBalance) * token.price,
@@ -129,10 +129,10 @@ const WalletTotalValue = () => {
   );
   const walletValue = {
     USD: walletTotalValueUSD,
-    OHM: walletTotalValueUSD / marketPrice,
+    [TokenSymbol.OHM]: walletTotalValueUSD / marketPrice,
   };
   return (
-    <Box onClick={() => setCurrency(currency === "USD" ? "OHM" : "USD")}>
+    <Box onClick={() => setCurrency(currency === "USD" ? TokenSymbol.OHM : "USD")}>
       <Typography style={{ lineHeight: 1.1, fontWeight: 600, fontSize: "0.975rem" }} color="textSecondary">
         MY WALLET
       </Typography>
@@ -174,7 +174,7 @@ function InitialWalletView({ onClose }: { onClose: () => void }) {
               ? { display: "flex", flexDirection: "column" }
               : { display: "grid", gridTemplateRows: "min-content", gridTemplateColumns: "repeat(2, minmax(0, 1fr))" }),
           }}
-          style={{ gap: theme.spacing(1.5) }}
+          style={{ gap: theme.spacing(1.5), display: IS_DASHBOARDS_VISIBLE ? "inherit" : "none" }}
         >
           <ExternalLink
             color={currentTheme === "dark" ? "primary" : undefined}
