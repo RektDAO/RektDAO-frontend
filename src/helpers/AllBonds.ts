@@ -85,7 +85,7 @@ export const dai = new StableBond({
     [NetworkId.ARBITRUM]: false,
     [NetworkId.ARBITRUM_TESTNET]: false,
     [NetworkId.AVALANCHE]: false,
-    [NetworkId.AVALANCHE_TESTNET]: false,
+    [NetworkId.AVALANCHE_TESTNET]: true,
   },
   isLOLable: {
     [NetworkId.LOCAL]: false,
@@ -104,7 +104,7 @@ export const dai = new StableBond({
     [NetworkId.ARBITRUM]: false,
     [NetworkId.ARBITRUM_TESTNET]: false,
     [NetworkId.AVALANCHE]: false,
-    [NetworkId.AVALANCHE_TESTNET]: false,
+    [NetworkId.AVALANCHE_TESTNET]: true,
   },
   networkAddrs: {
     [NetworkId.LOCAL]: {
@@ -118,6 +118,14 @@ export const dai = new StableBond({
     [NetworkId.TESTNET_RINKEBY]: {
       bondAddress: BLANK_ADDRESS,
       reserveAddress: BLANK_ADDRESS,
+    },
+    [NetworkId.AVALANCHE_TESTNET]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: addresses[NetworkId.AVALANCHE_TESTNET].DAI_ADDRESS,
+    },
+    [NetworkId.AVALANCHE]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: addresses[NetworkId.AVALANCHE].DAI_ADDRESS,
     },
   },
 });
@@ -182,7 +190,7 @@ export const frax = new StableBond({
     [NetworkId.ARBITRUM]: false,
     [NetworkId.ARBITRUM_TESTNET]: false,
     [NetworkId.AVALANCHE]: false,
-    [NetworkId.AVALANCHE_TESTNET]: false,
+    [NetworkId.AVALANCHE_TESTNET]: true,
   },
   isLOLable: {
     [NetworkId.LOCAL]: false,
@@ -201,7 +209,7 @@ export const frax = new StableBond({
     [NetworkId.ARBITRUM]: false,
     [NetworkId.ARBITRUM_TESTNET]: false,
     [NetworkId.AVALANCHE]: false,
-    [NetworkId.AVALANCHE_TESTNET]: false,
+    [NetworkId.AVALANCHE_TESTNET]: true,
   },
   networkAddrs: {
     [NetworkId.LOCAL]: {
@@ -215,6 +223,14 @@ export const frax = new StableBond({
     [NetworkId.TESTNET_RINKEBY]: {
       bondAddress: BLANK_ADDRESS,
       reserveAddress: BLANK_ADDRESS,
+    },
+    [NetworkId.AVALANCHE_TESTNET]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: addresses[NetworkId.AVALANCHE_TESTNET].FRAX_ADDRESS,
+    },
+    [NetworkId.AVALANCHE]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: addresses[NetworkId.AVALANCHE].FRAX_ADDRESS,
     },
   },
 });
@@ -233,7 +249,7 @@ export const wavax = new StableBond({
     [NetworkId.TESTNET_RINKEBY]: false,
     [NetworkId.ARBITRUM]: false,
     [NetworkId.ARBITRUM_TESTNET]: false,
-    [NetworkId.AVALANCHE]: false,
+    [NetworkId.AVALANCHE]: true,
     [NetworkId.AVALANCHE_TESTNET]: true,
   },
   isLOLable: {
@@ -252,7 +268,7 @@ export const wavax = new StableBond({
     [NetworkId.TESTNET_RINKEBY]: false,
     [NetworkId.ARBITRUM]: false,
     [NetworkId.ARBITRUM_TESTNET]: false,
-    [NetworkId.AVALANCHE]: false,
+    [NetworkId.AVALANCHE]: true,
     [NetworkId.AVALANCHE_TESTNET]: true,
   },
   networkAddrs: {
@@ -262,7 +278,155 @@ export const wavax = new StableBond({
     },
     [NetworkId.AVALANCHE_TESTNET]: {
       bondAddress: BLANK_ADDRESS,
-      reserveAddress: addresses[NetworkId.AVALANCHE_TESTNET].RESERVETOKEN1_ADDRESS,
+      reserveAddress: addresses[NetworkId.AVALANCHE_TESTNET].WAVAX_ADDRESS,
+    },
+    [NetworkId.AVALANCHE]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: addresses[NetworkId.AVALANCHE].WAVAX_ADDRESS,
+    },
+  },
+});
+
+export const savax = new StableBond({
+  name: "savax",
+  displayName: "SAVAX",
+  bondToken: "SAVAX",
+  payoutToken: TokenSymbol.OHM,
+  v2Bond: true,
+  bondIconSvg: ["AVAX"],
+  bondContractABI: DaiBondContract, // TODO: add updated ABI
+  isBondable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: true,
+    [NetworkId.AVALANCHE_TESTNET]: false,
+  },
+  isLOLable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: false,
+    [NetworkId.AVALANCHE_TESTNET]: false,
+  },
+  LOLmessage: "",
+  isClaimable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: true,
+    [NetworkId.AVALANCHE_TESTNET]: false,
+  },
+  networkAddrs: {
+    [NetworkId.LOCAL]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: BLANK_ADDRESS,
+    },
+    [NetworkId.AVALANCHE]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: addresses[NetworkId.AVALANCHE].SAVAX_ADDRESS,
+    },
+  },
+});
+
+export const xjoe = new StableBond({
+  name: "xjoe",
+  displayName: "xJOE",
+  bondToken: "xJOE",
+  payoutToken: TokenSymbol.OHM,
+  v2Bond: true,
+  bondIconSvg: ["placeholder"],
+  bondContractABI: DaiBondContract, // TODO: add updated ABI
+  isBondable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: true,
+    [NetworkId.AVALANCHE_TESTNET]: false,
+  },
+  isLOLable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: false,
+    [NetworkId.AVALANCHE_TESTNET]: false,
+  },
+  LOLmessage: "",
+  isClaimable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: true,
+    [NetworkId.AVALANCHE_TESTNET]: false,
+  },
+  networkAddrs: {
+    [NetworkId.LOCAL]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: BLANK_ADDRESS,
+    },
+    [NetworkId.AVALANCHE]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: addresses[NetworkId.AVALANCHE].XJOE_ADDRESS,
+    },
+  },
+});
+
+export const grt = new StableBond({
+  name: "grt",
+  displayName: "GRT",
+  bondToken: "GRT",
+  payoutToken: TokenSymbol.OHM,
+  v2Bond: true,
+  bondIconSvg: ["placeholder"],
+  bondContractABI: DaiBondContract, // TODO: add updated ABI
+  isBondable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: true,
+    [NetworkId.AVALANCHE_TESTNET]: false,
+  },
+  isLOLable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: false,
+    [NetworkId.AVALANCHE_TESTNET]: false,
+  },
+  LOLmessage: "",
+  isClaimable: {
+    [NetworkId.LOCAL]: false,
+    [NetworkId.MAINNET]: false,
+    [NetworkId.TESTNET_RINKEBY]: false,
+    [NetworkId.ARBITRUM]: false,
+    [NetworkId.ARBITRUM_TESTNET]: false,
+    [NetworkId.AVALANCHE]: true,
+    [NetworkId.AVALANCHE_TESTNET]: false,
+  },
+  networkAddrs: {
+    [NetworkId.LOCAL]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: BLANK_ADDRESS,
+    },
+    [NetworkId.AVALANCHE]: {
+      bondAddress: BLANK_ADDRESS,
+      reserveAddress: addresses[NetworkId.AVALANCHE].GRT_ADDRESS,
     },
   },
 });
@@ -310,7 +474,7 @@ export const chainlink = new StableBond({
     },
     [NetworkId.AVALANCHE_TESTNET]: {
       bondAddress: BLANK_ADDRESS,
-      reserveAddress: addresses[NetworkId.AVALANCHE_TESTNET].RESERVETOKEN2_ADDRESS,
+      reserveAddress: addresses[NetworkId.AVALANCHE_TESTNET].LINK_ADDRESS,
     },
   },
 });
@@ -994,6 +1158,8 @@ export const allBonds = [
   dai,
   frax,
   wavax,
+  savax,
+  xjoe,
   chainlink,
   // eth,
   // cvx,

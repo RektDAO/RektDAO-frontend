@@ -47,8 +47,8 @@ export const BLOCKS_PER_DAY_MAP: { [key: number]: number } = {
   [NetworkId.ARBITRUM]: 50000, // https://arbiscan.io/chart/blocks
   [NetworkId.ARBITRUM_TESTNET]: 50000, // https://testnet.arbiscan.io/chart/blocks
 
-  [NetworkId.AVALANCHE]: 44000, // https://snowtrace.io/chart/blocks
-  [NetworkId.AVALANCHE_TESTNET]: 40000, // https://testnet.snowtrace.io/chart/blocks
+  [NetworkId.AVALANCHE]: 42000, // https://snowtrace.io/chart/blocks
+  [NetworkId.AVALANCHE_TESTNET]: 42000, // https://testnet.snowtrace.io/chart/blocks
 
   [NetworkId.POLYGON]: 40000, // https://polygonscan.com/chart/blocks
   [NetworkId.POLYGON_TESTNET]: 40000, // https://mumbai.polygonscan.com/chart/blocks (DISABLED)

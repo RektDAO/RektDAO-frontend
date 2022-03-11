@@ -79,6 +79,36 @@ const AvaxDetails: V2BondDetails = {
   lpUrl: {},
 };
 
+const SavaxDetails: V2BondDetails = {
+  name: "SAVAX",
+  bondIconSvg: ["AVAX"],
+  pricingFunction: async () => {
+    return getTokenPrice("benqi-liquid-staked-avax");
+  },
+  isLP: false,
+  lpUrl: {},
+};
+
+const XjoeDetails: V2BondDetails = {
+  name: "xJOE",
+  bondIconSvg: ["placeholder"],
+  pricingFunction: async () => {
+    return getTokenPrice("joe");
+  },
+  isLP: false,
+  lpUrl: {},
+};
+
+const GrtDetails: V2BondDetails = {
+  name: "GRT",
+  bondIconSvg: ["placeholder"],
+  pricingFunction: async () => {
+    return getTokenPrice("the-graph");
+  },
+  isLP: false,
+  lpUrl: {},
+};
+
 const LinkDetails: V2BondDetails = {
   name: "LINK",
   bondIconSvg: ["placeholder"],
@@ -189,7 +219,15 @@ export const v2BondDetails: { [key: number]: { [key: string]: V2BondDetails } } 
   [NetworkId.AVALANCHE_TESTNET]: {
     [String(addresses[NetworkId.AVALANCHE_TESTNET].DAI_ADDRESS).toLowerCase()]: DaiDetails,
     [String(addresses[NetworkId.AVALANCHE_TESTNET].FRAX_ADDRESS).toLowerCase()]: FraxDetails,
-    [String(addresses[NetworkId.AVALANCHE_TESTNET].RESERVETOKEN1_ADDRESS).toLowerCase()]: AvaxDetails,
-    [String(addresses[NetworkId.AVALANCHE_TESTNET].RESERVETOKEN2_ADDRESS).toLowerCase()]: LinkDetails,
+    [String(addresses[NetworkId.AVALANCHE_TESTNET].WAVAX_ADDRESS).toLowerCase()]: AvaxDetails,
+    [String(addresses[NetworkId.AVALANCHE_TESTNET].LINK_ADDRESS).toLowerCase()]: LinkDetails,
+  },
+  [NetworkId.AVALANCHE]: {
+    [String(addresses[NetworkId.AVALANCHE].DAI_ADDRESS).toLowerCase()]: DaiDetails,
+    [String(addresses[NetworkId.AVALANCHE].FRAX_ADDRESS).toLowerCase()]: FraxDetails,
+    [String(addresses[NetworkId.AVALANCHE].WAVAX_ADDRESS).toLowerCase()]: AvaxDetails,
+    [String(addresses[NetworkId.AVALANCHE].SAVAX_ADDRESS).toLowerCase()]: SavaxDetails,
+    [String(addresses[NetworkId.AVALANCHE].XJOE_ADDRESS).toLowerCase()]: XjoeDetails,
+    [String(addresses[NetworkId.AVALANCHE].GRT_ADDRESS).toLowerCase()]: GrtDetails,
   },
 };
