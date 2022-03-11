@@ -29,7 +29,7 @@ export const useUnstakeToken = (fromToken: TokenSymbol.SOHM | TokenSymbol.GOHM) 
 
       if (!parsedAmount.gt(0)) throw new Error(t`Please enter a number greater than 0`);
 
-      const balance = balances[networks.MAINNET].data;
+      const balance = balances[networkId].data;
 
       if (!balance) throw new Error(t`Please refresh your page and try again`);
 

@@ -100,7 +100,7 @@ export const StakeBalances = () => {
         </AccordionSummary>
 
         <AccordionDetails>
-          {hasVisibleBalance(v1sohmBalances[networks.MAINNET]?.data) && (
+          {hasVisibleBalance(sohmBalances[networks.MAINNET]?.data) && (
             <DataRow
               indented
               title={`${TokenSymbol.SOHM} (Mainnet)`}
@@ -110,7 +110,7 @@ export const StakeBalances = () => {
             />
           )}
 
-          {hasVisibleBalance(gohmBalances[networks.ARBITRUM]?.data, 18) && (
+          {hasVisibleBalance(gohmBalances[networks.MAINNET]?.data, 18) && (
             <DataRow
               indented
               title={`${TokenSymbol.GOHM} (Mainnet)`}
