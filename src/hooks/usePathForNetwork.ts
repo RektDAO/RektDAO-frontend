@@ -18,7 +18,7 @@ export function usePathForNetwork({
     // do nothing if networkID is -1 since that's a default state
     // if (networkID === -1) return;
 
-    const pathUnavail = "/wrap";
+    const pathUnavail = "/dashboard";
     switch (pathName) {
       case "stake":
         if (VIEWS_FOR_NETWORK[networkID] && VIEWS_FOR_NETWORK[networkID].stake) {

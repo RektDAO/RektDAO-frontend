@@ -2,7 +2,7 @@ import arbitrum from "./assets/arbitrum.png";
 import avalanche from "./assets/tokens/AVAX.svg";
 import polygon from "./assets/tokens/matic.svg";
 import ethereum from "./assets/tokens/wETH.svg";
-import { addressesLocal, NetworkId } from "./constantsAddl";
+import { addressesLocal, DEFAULT_CHAIN_ID, NetworkId } from "./constantsAddl";
 import { EnvHelper } from "./helpers/Environment";
 import { NodeHelper } from "./helpers/NodeHelper";
 
@@ -85,7 +85,7 @@ export const USER_SELECTABLE_NETWORKS = [NetworkId.LOCAL, NetworkId.AVALANCHE_TE
 
 // Set this to the chain number of the most recently added network in order to enable the 'Now supporting X network'
 // message in the UI. Set to -1 if we don't want to display the message at the current time.
-export const NEWEST_NETWORK_ID = NetworkId.AVALANCHE_TESTNET;
+export const NEWEST_NETWORK_ID = DEFAULT_CHAIN_ID; // NetworkId.AVALANCHE_TESTNET;
 
 export const NETWORKS: { [key: number]: INetwork } = {
   [NetworkId.LOCAL]: {

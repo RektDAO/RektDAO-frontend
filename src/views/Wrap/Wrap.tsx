@@ -11,7 +11,7 @@ import { useAppSelector } from "src/hooks";
 import { useWeb3Context } from "src/hooks/web3Context";
 import { isPendingTxn, txnButtonTextMultiType } from "src/slices/PendingTxnsSlice";
 
-import { NetworkId, NETWORKS, TokenSymbol } from "../../constants";
+import { APP_URL_ROOT, NetworkId, NETWORKS, TokenSymbol } from "../../constants";
 import { formatCurrency, trim } from "../../helpers";
 import { switchNetwork } from "../../helpers/NetworkHelper";
 import { changeApproval, changeWrapV2 } from "../../slices/WrapThunk";
@@ -178,8 +178,8 @@ const Wrap: FC = () => {
                 style={{ textDecoration: "none" }}
                 href={
                   assetTo === "wsOHM"
-                    ? "https://docs.olympusdao.finance/main/contracts/tokens#wsohm"
-                    : "https://docs.olympusdao.finance/main/contracts/tokens#gohm"
+                    ? `https://docs.${APP_URL_ROOT}/main/contracts/tokens#wsohm`
+                    : `https://docs.${APP_URL_ROOT}/main/contracts/tokens#gohm`
                 }
                 aria-label="wsohm-wut"
                 target="_blank"

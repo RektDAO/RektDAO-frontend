@@ -5,7 +5,7 @@ import { DataRow, Input, PrimaryButton } from "@olympusdao/component-library";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { APP_NAME } from "src/constants";
+import { APP_NAME, TokenSymbol } from "src/constants";
 import { useAppSelector } from "src/hooks";
 import { useWeb3Context } from "src/hooks/web3Context";
 import { changeApproval, getSingleBond, IBondV2, purchaseBond } from "src/slices/BondSliceV2";
@@ -57,10 +57,9 @@ function BondPurchase({
     } else if (Number(quantity) > maxBondable) {
       dispatch(
         error(
-          t`Max capacity is ${maxBondable} ${bond.displayName} for ${trim(
-            +bond.maxPayoutOrCapacityInBase,
-            4,
-          )} sOHM. Click Max to autocomplete.`,
+          t`Max capacity is ${maxBondable} ${bond.displayName} for ${trim(+bond.maxPayoutOrCapacityInBase, 4)} ${
+            TokenSymbol.SOHM
+          }. Click Max to autocomplete.`,
         ),
       );
     } else {
@@ -198,14 +197,16 @@ function BondPurchase({
             title={t`You Will Get`}
             balance={
               `${trim(Number(quantity) / bond.priceToken, 4) || "0"} ` +
-              `sOHM (≈${trim(+quantity / bond.priceToken / +currentIndex, 4) || "0"} gOHM)`
+              `${TokenSymbol.SOHM} (≈${trim(+quantity / bond.priceToken / +currentIndex, 4) || "0"} ${
+                TokenSymbol.GOHM
+              })`
             }
-            // tooltip={t`The total amount of payout asset you will recieve from this bond purhcase. (sOHM amount will be higher due to rebasing)`}
+            // tooltip={t`The total amount of payout asset you will recieve from this bond purchase. (sOHM amount will be higher due to rebasing)`}
             isLoading={isBondLoading}
           />
           <DataRow
             title={t`Max You Can Buy`}
-            balance={`${trim(+bond.maxPayoutOrCapacityInBase, 4) || "0"} sOHM (≈${
+            balance={`${trim(+bond.maxPayoutOrCapacityInBase, 4) || "0"} ${TokenSymbol.SOHM} (≈${
               trim(+bond.maxPayoutOrCapacityInQuote, 4) || "0"
             } ${bond.displayName})`}
             isLoading={isBondLoading}
@@ -233,8 +234,8 @@ function BondPurchase({
       <div className="help-text">
         <em>
           <Typography variant="body2">
-            Important: New bonds are auto-staked (accrue rebase rewards) and no longer vest linearly. Simply claim as
-            sOHM or gOHM at the end of the term.
+            Important: New bonds are auto-staked (accrue rebase rewards) and no longer vest linearly. Simply claim as{" "}
+            {TokenSymbol.SOHM} or {TokenSymbol.GOHM} at the end of the term.
           </Typography>
         </em>
       </div>
