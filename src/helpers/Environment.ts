@@ -1,7 +1,7 @@
 import { NetworkId } from "src/networkDetails";
 
 export const LOCAL_CHAIN_ID_FALLBACK = 1337;
-export const DEFAULT_CHAIN_ID_FALLBACK = -1; // 43113?
+export const DEFAULT_CHAIN_ID_FALLBACK = -1; // 43114;
 
 /**
  * Access `process.env` in an environment helper
