@@ -9,7 +9,7 @@ const Social: React.FC = () => (
     <Link href={`https://github.com/${EnvHelper.env.REACT_APP_SOCIAL_GITHUB}`} target="_blank">
       <Icon name="github" />
     </Link>
-    <Link href={`https://${EnvHelper.env.REACT_APP_SOCIAL_MEDIUM}.medium.com/`} target="_blank">
+    <Link href={`https://medium.com/@${EnvHelper.env.REACT_APP_SOCIAL_MEDIUM}`} target="_blank">
       <Icon name="medium" />
     </Link>
     <Link href={`https://twitter.com/${EnvHelper.env.REACT_APP_SOCIAL_TWITTER}`} target="_blank">

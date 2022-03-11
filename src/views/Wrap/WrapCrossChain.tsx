@@ -13,7 +13,7 @@ import { useAppSelector } from "src/hooks/index";
 import { useWeb3Context } from "src/hooks/web3Context";
 import { isPendingTxn, txnButtonTextMultiType } from "src/slices/PendingTxnsSlice";
 
-import { NetworkId, NETWORKS } from "../../constants";
+import { APP_URL_ROOT, NetworkId, NETWORKS } from "../../constants";
 import { formatCurrency, trim } from "../../helpers";
 import { switchNetwork } from "../../helpers/NetworkHelper";
 import { changeMigrationApproval, migrateCrossChainWSOHM } from "../../slices/MigrateThunk";
@@ -151,7 +151,7 @@ function WrapCrossChain() {
             <Link
               className="migrate-sohm-button"
               style={{ textDecoration: "none" }}
-              href={"https://docs.olympusdao.finance/main/contracts/tokens#gohm"}
+              href={`https://docs.${APP_URL_ROOT}/main/contracts/tokens#gohm`}
               aria-label="wsohm-wut"
               target="_blank"
             >

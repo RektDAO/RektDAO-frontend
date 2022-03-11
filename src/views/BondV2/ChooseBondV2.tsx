@@ -18,6 +18,7 @@ import { Metric, MetricCollection, Paper } from "@olympusdao/component-library";
 import isEmpty from "lodash/isEmpty";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
+import { TokenSymbol } from "src/constants";
 import { useAppSelector, useWeb3Context } from "src/hooks";
 import { usePathForNetwork } from "src/hooks/usePathForNetwork";
 import { IUserBondDetails } from "src/slices/AccountSlice";
@@ -84,7 +85,7 @@ function ChooseBondV2() {
               isLoading={treasuryBalance === undefined}
             />
             <Metric
-              label={t`OHM Price`}
+              label={`${TokenSymbol.OHM} Price`}
               metric={formatCurrency(Number(marketPrice), 2)}
               isLoading={marketPrice ? false : true}
             />
@@ -130,7 +131,7 @@ function ChooseBondV2() {
             <em>
               <Typography variant="body2">
                 Important: New bonds are auto-staked (accrue rebase rewards) and no longer vest linearly. Simply claim
-                as sOHM or gOHM at the end of the term.
+                as {TokenSymbol.SOHM} or {TokenSymbol.GOHM} at the end of the term.
               </Typography>
             </em>
           </Box>

@@ -134,7 +134,7 @@ export const StakeInputArea: React.FC<{ isZoomed: boolean }> = props => {
       <Paper className="ohm-card confirm-dialog">
         <Box display={[null, "flex"]} alignItems="center" justifyContent="space-between">
           <Grid component="label" container alignItems="center" spacing={1} wrap="nowrap">
-            <Grid item>sOHM</Grid>
+            <Grid item>{TokenSymbol.SOHM}</Grid>
 
             <Grid item>
               <Switch
@@ -148,11 +148,11 @@ export const StakeInputArea: React.FC<{ isZoomed: boolean }> = props => {
             </Grid>
 
             <Grid item>
-              gOHM
+              {TokenSymbol.GOHM}
               <InfoTooltip
-                message={`Toggle to switch between ${
-                  currentAction === "STAKE" ? "staking to" : "unstaking from"
-                } sOHM or gOHM`}
+                message={`Toggle to switch between ${currentAction === "STAKE" ? "staking to" : "unstaking from"} ${
+                  TokenSymbol.SOHM
+                } or ${TokenSymbol.GOHM}`}
               />
             </Grid>
           </Grid>
