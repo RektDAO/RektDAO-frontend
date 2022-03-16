@@ -1,8 +1,8 @@
 import { OHMTokenStackProps } from "@olympusdao/component-library";
 import { ethers } from "ethers";
 
-import { addresses, NetworkId } from "../networkDetails";
-import { IERC20__factory, UniswapV2Lp__factory } from "../typechain";
+import { addresses, DEFAULT_CHAIN_ID, NetworkId, TokenStubCoingecko } from "../networkDetails";
+import { IERC20__factory, TJGRektWavax__factory, UniswapV2Lp__factory } from "../typechain";
 import { getTokenByContract, getTokenPrice } from "./";
 
 const pricingFunctionHelper = async (
@@ -11,19 +11,30 @@ const pricingFunctionHelper = async (
   firstToken: string,
   secondToken: string,
 ) => {
-  const baseContract = UniswapV2Lp__factory.connect(quoteToken, provider);
+  const networkId = provider?.network?.chainId || DEFAULT_CHAIN_ID;
+  let lpFactory;
+  switch (networkId) {
+    case NetworkId.AVALANCHE_TESTNET:
+    case NetworkId.AVALANCHE:
+      lpFactory = TJGRektWavax__factory;
+      break;
+    default:
+      lpFactory = UniswapV2Lp__factory;
+      break;
+  }
+  const baseContract = lpFactory.connect(quoteToken, provider);
   const reserves = await baseContract.getReserves();
   const totalSupply = +(await baseContract.totalSupply()) / Math.pow(10, await baseContract.decimals());
 
   const token0Contract = IERC20__factory.connect(await baseContract.token0(), provider);
   const token0Decimals = await token0Contract.decimals();
   const token0Amount = +reserves._reserve0 / Math.pow(10, token0Decimals);
-  const token0TotalValue = (await getTokenPrice(firstToken)) * token0Amount;
+  const token0TotalValue = (await getTokenPrice(firstToken, networkId)) * token0Amount;
 
   const token1Contract = IERC20__factory.connect(await baseContract.token1(), provider);
   const token1Decimals = await token1Contract.decimals();
   const token1Amount = +reserves._reserve1 / Math.pow(10, token1Decimals);
-  const token1TotalValue = (await getTokenPrice(secondToken)) * token1Amount;
+  const token1TotalValue = (await getTokenPrice(secondToken, networkId)) * token1Amount;
 
   const totalValue = token0TotalValue + token1TotalValue;
   const valuePerLpToken = totalValue / totalSupply;
@@ -149,6 +160,51 @@ const WbtcDetails: V2BondDetails = {
   lpUrl: {},
 };
 
+const RektWavaxDetails: V2BondDetails = {
+  name: "REKT-WAVAX LP",
+  bondIconSvg: ["OHM", "AVAX"],
+  async pricingFunction(provider, quoteToken) {
+    return pricingFunctionHelper(provider, quoteToken, TokenStubCoingecko.OHM, "avalanche-2");
+  },
+  isLP: true,
+  lpUrl: {
+    [NetworkId.AVALANCHE_TESTNET]:
+      "https://traderjoexyz.com/pool/0xB30811b2ABb6B86e253Cf38Dc91E6Efa5705185b/0xd00ae08403b9bbb9124bb305c09058e32c39a48c#/",
+    [NetworkId.AVALANCHE]:
+      "https://traderjoexyz.com/pool/0xB30811b2ABb6B86e253Cf38Dc91E6Efa5705185b/0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7#/",
+  },
+};
+
+const SRektWavaxDetails: V2BondDetails = {
+  name: "sREKT-WAVAX LP",
+  bondIconSvg: ["sOHM", "AVAX"],
+  async pricingFunction(provider, quoteToken) {
+    return pricingFunctionHelper(provider, quoteToken, TokenStubCoingecko.SOHM, "avalanche-2");
+  },
+  isLP: true,
+  lpUrl: {
+    [NetworkId.AVALANCHE_TESTNET]:
+      "https://traderjoexyz.com/pool/0x4967104a02a2E8eC6b02D95263f26DDa18F9AB41/0xd00ae08403b9bbb9124bb305c09058e32c39a48c#/",
+    [NetworkId.AVALANCHE]:
+      "https://traderjoexyz.com/pool/0x4967104a02a2E8eC6b02D95263f26DDa18F9AB41/0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7#/",
+  },
+};
+
+const GRektWavaxDetails: V2BondDetails = {
+  name: "gREKT-WAVAX LP",
+  bondIconSvg: ["wsOHM", "AVAX"],
+  async pricingFunction(provider, quoteToken) {
+    return pricingFunctionHelper(provider, quoteToken, TokenStubCoingecko.GOHM, "avalanche-2");
+  },
+  isLP: true,
+  lpUrl: {
+    [NetworkId.AVALANCHE_TESTNET]:
+      "https://traderjoexyz.com/pool/0x3Df307e8E9a897Da488211682430776CDF0f17cC/0xd00ae08403b9bbb9124bb305c09058e32c39a48c#/",
+    [NetworkId.AVALANCHE]:
+      "https://traderjoexyz.com/pool/0x3Df307e8E9a897Da488211682430776CDF0f17cC/0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7#/",
+  },
+};
+
 const OhmDaiDetails: V2BondDetails = {
   name: "OHM-DAI LP",
   bondIconSvg: ["OHM", "DAI"],
@@ -221,6 +277,9 @@ export const v2BondDetails: { [key: number]: { [key: string]: V2BondDetails } } 
     [String(addresses[NetworkId.AVALANCHE_TESTNET].FRAX_ADDRESS).toLowerCase()]: FraxDetails,
     [String(addresses[NetworkId.AVALANCHE_TESTNET].WAVAX_ADDRESS).toLowerCase()]: AvaxDetails,
     [String(addresses[NetworkId.AVALANCHE_TESTNET].LINK_ADDRESS).toLowerCase()]: LinkDetails,
+    [String(addresses[NetworkId.AVALANCHE_TESTNET].REKT_WAVAX_LP_ADDRESS).toLowerCase()]: RektWavaxDetails,
+    [String(addresses[NetworkId.AVALANCHE_TESTNET].SREKT_WAVAX_LP_ADDRESS).toLowerCase()]: SRektWavaxDetails,
+    [String(addresses[NetworkId.AVALANCHE_TESTNET].GREKT_WAVAX_LP_ADDRESS).toLowerCase()]: GRektWavaxDetails,
   },
   [NetworkId.AVALANCHE]: {
     [String(addresses[NetworkId.AVALANCHE].DAI_ADDRESS).toLowerCase()]: DaiDetails,
@@ -229,5 +288,8 @@ export const v2BondDetails: { [key: number]: { [key: string]: V2BondDetails } } 
     [String(addresses[NetworkId.AVALANCHE].SAVAX_ADDRESS).toLowerCase()]: SavaxDetails,
     [String(addresses[NetworkId.AVALANCHE].XJOE_ADDRESS).toLowerCase()]: XjoeDetails,
     [String(addresses[NetworkId.AVALANCHE].GRT_ADDRESS).toLowerCase()]: GrtDetails,
+    [String(addresses[NetworkId.AVALANCHE].REKT_WAVAX_LP_ADDRESS).toLowerCase()]: RektWavaxDetails,
+    [String(addresses[NetworkId.AVALANCHE].SREKT_WAVAX_LP_ADDRESS).toLowerCase()]: SRektWavaxDetails,
+    [String(addresses[NetworkId.AVALANCHE].GREKT_WAVAX_LP_ADDRESS).toLowerCase()]: GRektWavaxDetails,
   },
 };
