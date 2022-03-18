@@ -1,21 +1,32 @@
 import { NetworkId } from "src/constants";
 import { ExternalPool } from "src/lib/ExternalPool";
 
+export const tj_gohm_wavax_test = new ExternalPool({
+  poolName: "gREKT-AVAX (TEST)",
+  icons: ["wsOHM", "AVAX"],
+  stakeOn: "Trader Joe (Avalanche Testnet)",
+  pairGecko: "avalanche-2",
+  href: "https://traderjoexyz.com/pool/0x3df307e8e9a897da488211682430776cdf0f17cc/0xd00ae08403b9bbb9124bb305c09058e32c39a48c#/",
+  address: "0x41C587c4cb467De9c1BF970BB19f82397F55c2ab",
+  masterchef: "0x42069FdaC2d69e0F58A7AB5dC0cA9D5220B8BDF7",
+  networkID: NetworkId.AVALANCHE_TESTNET,
+});
+
 export const tj_gohm_wavax = new ExternalPool({
-  poolName: "gOHM-AVAX",
+  poolName: "gREKT-AVAX",
   icons: ["wsOHM", "AVAX"],
   stakeOn: "Trader Joe (Avalanche)",
   pairGecko: "avalanche-2",
-  href: "https://traderjoexyz.com/farm/0xB674f93952F02F2538214D4572Aa47F262e990Ff-0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00",
-  address: "0xb674f93952f02f2538214d4572aa47f262e990ff",
-  masterchef: "0x188bED1968b795d5c9022F6a0bb5931Ac4c18F00",
+  href: "https://traderjoexyz.com/pool/0x3df307e8e9a897da488211682430776cdf0f17cc/0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7#/",
+  address: "0x7a6e324a84306b7799d1882a5142310700964eaa",
+  masterchef: "0x42069FdaC2d69e0F58A7AB5dC0cA9D5220B8BDF7",
   networkID: NetworkId.AVALANCHE,
 });
 
 export const pango_gohm_wavax = new ExternalPool({
   poolName: "gOHM-AVAX",
   icons: ["wsOHM", "AVAX"],
-  stakeOn: "Pangolin",
+  stakeOn: "Pangolin (Avalanche)",
   pairGecko: "avalanche-2",
   href: "https://app.pangolin.exchange/#/png/0x321E7092a180BB43555132ec53AaA65a5bF84251/AVAX/2",
   address: "0xb68f4e8261a4276336698f5b11dc46396cf07a22",
@@ -58,6 +69,6 @@ export const spirit_gohm_ftm = new ExternalPool({
 
 // export const allPools = [tj_gohm_wavax, pango_gohm_wavax, sushi_arb_gohm_weth, sushi_poly_gohm_weth];
 // export const allPools = [tj_gohm_wavax, sushi_arb_gohm_weth, sushi_poly_gohm_weth, spirit_gohm_ftm];
-export const allPools = [];
+export const allPools = [tj_gohm_wavax_test, tj_gohm_wavax];
 
 export default allPools;

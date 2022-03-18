@@ -23,8 +23,14 @@ export enum TokenName {
   SOHM = "Staked REKT",
   GOHM = "Governance REKT",
 }
-export type TokenNameKey = keyof typeof TokenName;
-export type TokenNameVal = typeof TokenName[TokenNameKey];
+export type TokenNameVal = typeof TokenName[TokenSymbolKey];
+
+export enum TokenStubCoingecko {
+  OHM = "rektdao",
+  SOHM = "staked-rekt",
+  GOHM = "governance-rekt",
+}
+export type TokenStubCoingeckoVal = typeof TokenStubCoingecko[TokenSymbolKey];
 
 export const TOKEN_DECIMALS_TENS = 10 ** SOHM_CONTRACT_DECIMALS;
 export const SECONDS_PER_DAY = 86400; // 60 * 60 * 24

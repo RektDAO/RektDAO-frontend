@@ -23,6 +23,7 @@ import {
   NetworkIdVal,
   NETWORKS,
   TOKEN_DECIMALS_TENS,
+  TokenStubCoingecko,
   TokenSymbol,
 } from "../constants";
 import { PairContract, RedeemHelper } from "../typechain";
@@ -96,7 +97,16 @@ export async function getV1MarketPrice(networkId: NetworkIdVal = DEFAULT_CHAIN_I
  * @param tokenId STRING taken from https://www.coingecko.com/api/documentations/v3#/coins/get_coins_list
  * @returns INTEGER usd value
  */
-export async function getTokenPrice(tokenId = "olympus"): Promise<number> {
+export async function getTokenPrice(
+  tokenId: string = TokenStubCoingecko.OHM,
+  networkId: NetworkIdVal = DEFAULT_CHAIN_ID,
+): Promise<number> {
+  if (tokenId == TokenStubCoingecko.OHM) {
+    const marketPrice: number = await getMarketPrice(networkId); // note: until CG listing
+    console.info(`Token price from getMarketPrice: ${tokenId} = ${marketPrice}`);
+    return marketPrice;
+  }
+
   let tokenPrice = 0;
   const priceApiURL = "https://api.olympusdao.finance/api/rest/coingecko_name";
   try {
