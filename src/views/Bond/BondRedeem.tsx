@@ -3,6 +3,7 @@ import { Box, Button, Slide, Typography } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { DataRow } from "@olympusdao/component-library";
 import { useDispatch } from "react-redux";
+import { TokenSymbol } from "src/constantsAddl";
 import { useAppSelector } from "src/hooks";
 import { IAllBondData } from "src/hooks/useBonds";
 import { useWeb3Context } from "src/hooks/web3Context";
@@ -95,10 +96,14 @@ function BondRedeem({ bond }: { bond: IAllBondData }) {
       </Box>
       <Slide direction="right" in={true} mountOnEnter unmountOnExit {...{ timeout: 533 }}>
         <Box className="bond-data">
-          <DataRow title={t`Pending Rewards`} balance={`${trim(bond.interestDue, 4)} OHM`} isLoading={isBondLoading} />
+          <DataRow
+            title={t`Pending Rewards`}
+            balance={`${trim(bond.interestDue, 4)} ${TokenSymbol.OHM}`}
+            isLoading={isBondLoading}
+          />
           <DataRow
             title={t`Claimable Rewards`}
-            balance={`${trim(parseFloat(bond.pendingPayout), 4)} OHM`}
+            balance={`${trim(parseFloat(bond.pendingPayout), 4)} ${TokenSymbol.OHM}`}
             isLoading={isBondLoading}
           />
           <DataRow title={t`Time until fully vested`} balance={vestingTime()} isLoading={isBondLoading} />

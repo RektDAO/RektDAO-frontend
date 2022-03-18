@@ -3,7 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
 
 import { abi as OlympusGiving } from "../abi/OlympusGiving.json";
-import { addresses } from "../constants";
+import { addresses, TokenSymbol } from "../constants";
 import { trackGAEvent, trackSegmentEvent } from "../helpers/analytics";
 import { getBalances, getMockRedemptionBalances, getRedemptionBalances } from "./AccountSlice";
 import { IJsonRPCError, IRedeemAsyncThunk } from "./interfaces";
@@ -45,7 +45,9 @@ export const redeemBalance = createAsyncThunk(
       redeemTx = await giving.redeem();
       const pendingTxnType = "redeeming";
       uaData.txHash = redeemTx.hash;
-      dispatch(fetchPendingTxns({ txnHash: redeemTx.hash, text: "Redeeming sOHM", type: pendingTxnType }));
+      dispatch(
+        fetchPendingTxns({ txnHash: redeemTx.hash, text: `Redeeming ${TokenSymbol.SOHM}`, type: pendingTxnType }),
+      );
       await redeemTx.wait();
     } catch (e: unknown) {
       uaData.approved = false;
@@ -107,7 +109,9 @@ export const redeemMockBalance = createAsyncThunk(
       redeemTx = await giving.redeem();
       const pendingTxnType = "redeeming";
       uaData.txHash = redeemTx.hash;
-      dispatch(fetchPendingTxns({ txnHash: redeemTx.hash, text: "Redeeming sOHM", type: pendingTxnType }));
+      dispatch(
+        fetchPendingTxns({ txnHash: redeemTx.hash, text: `Redeeming ${TokenSymbol.SOHM}`, type: pendingTxnType }),
+      );
       await redeemTx.wait();
     } catch (e: unknown) {
       uaData.approved = false;

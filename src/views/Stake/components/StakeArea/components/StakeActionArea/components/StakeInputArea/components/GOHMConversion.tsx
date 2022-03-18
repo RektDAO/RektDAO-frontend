@@ -1,5 +1,6 @@
 import { Typography } from "@material-ui/core";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
+import { TokenSymbol } from "src/constantsAddl";
 import { convertGohmToOhm, convertOhmToGohm } from "src/helpers";
 import { useCurrentIndex } from "src/hooks/useCurrentIndex";
 
@@ -19,8 +20,8 @@ export const GOHMConversion: React.FC<{ amount: string; action: "STAKE" | "UNSTA
   return (
     <Typography variant="body2">
       {props.action === "STAKE"
-        ? `Stake ${props.amount} OHM → ${amountInGohm(_amount)} gOHM`
-        : `Unstake ${props.amount} gOHM → ${amountInSohm(_amount)} OHM`}
+        ? `Stake ${props.amount} ${TokenSymbol.OHM} → ${amountInGohm(_amount)} ${TokenSymbol.GOHM}`
+        : `Unstake ${props.amount} ${TokenSymbol.GOHM} → ${amountInSohm(_amount)} ${TokenSymbol.OHM}`}
     </Typography>
   );
 };
