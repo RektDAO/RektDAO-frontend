@@ -229,6 +229,10 @@ export function prettyVestingPeriod(currentBlock: number, vestingBlock: number) 
   return prettifySeconds(seconds);
 }
 
+export function prettifyRebaseTimer(seconds: number) {
+  return prettifySeconds(seconds) || "any moment";
+}
+
 export function prettifySeconds(seconds: number, resolution?: string) {
   if (seconds !== 0 && !seconds) {
     return "";

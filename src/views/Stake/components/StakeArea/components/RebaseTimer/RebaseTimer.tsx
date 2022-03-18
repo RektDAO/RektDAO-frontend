@@ -4,7 +4,7 @@ import { Trans } from "@lingui/macro";
 import { Box, Typography } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import React from "react";
-import { prettifySeconds } from "src/helpers";
+import { prettifyRebaseTimer } from "src/helpers";
 import { useNextRebaseDate } from "src/views/Stake/components/StakeArea/components/RebaseTimer/hooks/useNextRebaseDate";
 
 const RebaseTimer: React.FC = () => {
@@ -15,7 +15,7 @@ const RebaseTimer: React.FC = () => {
       <Typography variant="body2">
         {nextRebaseDate ? (
           <>
-            <strong>{prettifySeconds((nextRebaseDate.getTime() - new Date().getTime()) / 1000)}&nbsp;</strong>
+            <strong>{prettifyRebaseTimer((nextRebaseDate.getTime() - new Date().getTime()) / 1000)}&nbsp;</strong>
             <Trans>to next rebase</Trans>
           </>
         ) : (

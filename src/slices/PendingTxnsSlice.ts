@@ -28,19 +28,19 @@ const pendingTxnsSlice = createSlice({
   },
 });
 export const getStakingTypeText = (action: string) => {
-  return action.toLowerCase() === "stake" ? t`Staking ${TokenSymbol.OHM}` : t`Unstaking ${TokenSymbol.SOHM}`;
+  return action.toLowerCase() === "stake" ? `Staking ${TokenSymbol.OHM}` : `Unstaking ${TokenSymbol.SOHM}`;
 };
 
 export const getGivingTypeText = (action: string) => {
   return action.toLowerCase() === ACTION_GIVE
-    ? t`Giving ${TokenSymbol.SOHM}`
+    ? `Giving ${TokenSymbol.SOHM}`
     : ACTION_GIVE_EDIT
-    ? t`Editing ${TokenSymbol.SOHM} donation amount`
-    : t`Withdrawing ${TokenSymbol.SOHM} donation`;
+    ? `Editing ${TokenSymbol.SOHM} donation amount`
+    : `Withdrawing ${TokenSymbol.SOHM} donation`;
 };
 
 export const getWrappingTypeText = (action: string) => {
-  return action.toLowerCase() === "wrap" ? t`Wrapping ${TokenSymbol.OHM}` : t`Unwrapping ${TokenSymbol.SOHM}`;
+  return action.toLowerCase() === "wrap" ? `Wrapping ${TokenSymbol.OHM}` : `Unwrapping ${TokenSymbol.SOHM}`;
 };
 export const isPendingTxn = (pendingTransactions: IPendingTxn[], type: string) => {
   return pendingTransactions.map(x => x.type).includes(type);
