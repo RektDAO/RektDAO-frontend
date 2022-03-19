@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { TokenSymbol } from "src/constantsAddl";
 
 import { ACTION_GIVE, ACTION_GIVE_EDIT } from "./GiveThunk";
 
@@ -27,19 +28,19 @@ const pendingTxnsSlice = createSlice({
   },
 });
 export const getStakingTypeText = (action: string) => {
-  return action.toLowerCase() === "stake" ? t`Staking OHM` : t`Unstaking sOHM`;
+  return action.toLowerCase() === "stake" ? `Staking ${TokenSymbol.OHM}` : `Unstaking ${TokenSymbol.SOHM}`;
 };
 
 export const getGivingTypeText = (action: string) => {
   return action.toLowerCase() === ACTION_GIVE
-    ? t`Giving sOHM`
+    ? `Giving ${TokenSymbol.SOHM}`
     : ACTION_GIVE_EDIT
-    ? t`Editing sOHM donation amount`
-    : t`Withdrawing sOHM donation`;
+    ? `Editing ${TokenSymbol.SOHM} donation amount`
+    : `Withdrawing ${TokenSymbol.SOHM} donation`;
 };
 
 export const getWrappingTypeText = (action: string) => {
-  return action.toLowerCase() === "wrap" ? t`Wrapping OHM` : t`Unwrapping sOHM`;
+  return action.toLowerCase() === "wrap" ? `Wrapping ${TokenSymbol.OHM}` : `Unwrapping ${TokenSymbol.SOHM}`;
 };
 export const isPendingTxn = (pendingTransactions: IPendingTxn[], type: string) => {
   return pendingTransactions.map(x => x.type).includes(type);

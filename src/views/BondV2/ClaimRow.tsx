@@ -5,6 +5,7 @@ import { Box, TableCell, TableRow, Typography } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { TertiaryButton, TokenStack } from "@olympusdao/component-library";
 import { useDispatch } from "react-redux";
+import { TokenSymbol } from "src/constantsAddl";
 import { useAppSelector, useWeb3Context } from "src/hooks";
 import { claimSingleNote, IUserNote } from "src/slices/BondSliceV2";
 import { isPendingTxn, txnButtonText } from "src/slices/PendingTxnsSlice";
@@ -49,7 +50,8 @@ export function ClaimBondTableData({ userNote, gOHM }: { userNote: IUserNote; gO
       {/* Payout */}
       <TableCell align="center">
         {note.payout && currentIndex ? (
-          trim(note.payout * (gOHM ? 1 : Number(currentIndex)), 4) + (gOHM ? " gOHM" : " sOHM")
+          trim(note.payout * (gOHM ? 1 : Number(currentIndex)), 4) +
+          (gOHM ? ` ${TokenSymbol.GOHM}` : ` ${TokenSymbol.SOHM}`)
         ) : (
           <Skeleton width={100} />
         )}
@@ -106,7 +108,8 @@ export function ClaimBondCardData({ userNote, gOHM }: { userNote: IUserNote; gOH
         <Typography>Claimable</Typography>
         <Typography>
           {note.payout && currentIndex ? (
-            trim(note.payout * (gOHM ? 1 : Number(currentIndex)), 4) + (gOHM ? " gOHM" : " sOHM")
+            trim(note.payout * (gOHM ? 1 : Number(currentIndex)), 4) +
+            (gOHM ? ` ${TokenSymbol.GOHM}` : ` ${TokenSymbol.SOHM}`)
           ) : (
             <Skeleton width={100} />
           )}

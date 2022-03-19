@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit";
 import { BigNumber, BigNumberish, ethers } from "ethers";
+import { TokenSymbol } from "src/constantsAddl";
 import { getBondCalculator } from "src/helpers/BondCalculator";
 import { RootState } from "src/store";
 
@@ -191,7 +192,7 @@ export const calcBondDetails = createAsyncThunk(
         const errorString =
           "You're trying to bond more than the maximum payout available! The maximum bond payout is " +
           (Number(maxBondPrice.toString()) / Math.pow(10, 9)).toFixed(2).toString() +
-          " OHM.";
+          ` ${TokenSymbol.OHM}.`;
         dispatch(error(errorString));
       }
 

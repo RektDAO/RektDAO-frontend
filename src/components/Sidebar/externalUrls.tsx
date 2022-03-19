@@ -1,4 +1,6 @@
+import { Trans } from "@lingui/macro";
 import { ReactElement } from "react";
+import { APP_URL_ROOT } from "src/constantsAddl";
 
 export interface ExternalUrl {
   title: ReactElement;
@@ -17,6 +19,11 @@ const externalUrls: ExternalUrl[] = [
   //   url: `https://vote.${APP_URL_ROOT}/`,
   //   icon: "governance",
   // },
+  {
+    title: <Trans>Governance (AVAX)</Trans>,
+    url: `http://vote-avax.${APP_URL_ROOT}/`,
+    icon: "governance",
+  },
   // {
   //   title: <Trans>Docs</Trans>,
   //   url: `https://docs.${APP_URL_ROOT}/`,
@@ -32,6 +39,16 @@ const externalUrls: ExternalUrl[] = [
   //   url: `https://grants.${APP_URL_ROOT}/`,
   //   icon: "grants",
   // },
+  {
+    title: <Trans>Deployer/Contracts</Trans>,
+    url: `https://blockscan.com/address/0xF0011285c82518EDf8c63BEF41e7E2123FfC60BA`,
+    icon: "info",
+  },
+  {
+    title: <Trans>Links</Trans>,
+    url: `https://linktr.ee/rektdao`,
+    icon: "more",
+  },
 ];
 
 export default externalUrls;

@@ -31,9 +31,9 @@ export const useStakeToken = (toToken: TokenSymbol.SOHM | TokenSymbol.GOHM) => {
 
       if (!balance) throw new Error(t`Please refresh your page and try again`);
 
-      if (parsedAmount.gt(balance)) throw new Error(t`You cannot stake more than your OHM balance`);
+      if (parsedAmount.gt(balance)) throw new Error(`You cannot stake more than your ${TokenSymbol.OHM} balance`);
 
-      if (!contract) throw new Error(t`Please switch to the Ethereum network to stake your OHM`);
+      if (!contract) throw new Error(`Please switch to the Ethereum network to stake your ${TokenSymbol.OHM}`);
 
       if (!address) throw new Error(t`Please refresh your page and try again`);
 
@@ -56,7 +56,7 @@ export const useStakeToken = (toToken: TokenSymbol.SOHM | TokenSymbol.GOHM) => {
 
         await Promise.all(promises);
 
-        dispatch(createInfoToast(t`Successfully staked OHM`));
+        dispatch(createInfoToast(`Successfully staked ${TokenSymbol.OHM}`));
       },
     },
   );
