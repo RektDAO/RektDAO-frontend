@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+// import { Trans } from "@lingui/macro";
 import { Divider, Typography } from "@material-ui/core";
 import ConnectButton from "src/components/ConnectButton/ConnectButton";
 import { TokenSymbol } from "src/constantsAddl";
@@ -20,9 +20,7 @@ export const StakeActionArea: React.FC<{ isZoomed: boolean }> = props => {
           <ConnectButton />
         </div>
 
-        <Typography variant="h6">
-          <Trans>Connect your wallet to stake {TokenSymbol.OHM}</Trans>
-        </Typography>
+        <Typography variant="h6">Connect your wallet to stake {TokenSymbol.OHM}</Typography>
       </div>
     );
 

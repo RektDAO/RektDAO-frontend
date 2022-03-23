@@ -14,21 +14,21 @@ const externalUrls: ExternalUrl[] = [
   //   url: `https://forum.${APP_URL_ROOT}/`,
   //   icon: "forum",
   // },
-  // {
-  //   title: <Trans>Governance</Trans>,
-  //   url: `https://vote.${APP_URL_ROOT}/`,
-  //   icon: "governance",
-  // },
   {
     title: <Trans>Governance (AVAX)</Trans>,
     url: `http://vote-avax.${APP_URL_ROOT}/`,
     icon: "governance",
   },
-  // {
-  //   title: <Trans>Docs</Trans>,
-  //   url: `https://docs.${APP_URL_ROOT}/`,
-  //   icon: "docs",
-  // },
+  {
+    title: <Trans>Governance (Multi)</Trans>,
+    url: `https://vote.${APP_URL_ROOT}/`,
+    icon: "governance",
+  },
+  {
+    title: <Trans>Docs</Trans>,
+    url: `https://docs.${APP_URL_ROOT}/`,
+    icon: "docs",
+  },
   // {
   //   title: <Trans>Bug Bounty</Trans>,
   //   url: `https://immunefi.com/bounty/olympus/`,
